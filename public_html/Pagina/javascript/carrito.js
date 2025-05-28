@@ -1,7 +1,20 @@
+import {
+  getSesion,
+  redirigirSiNoAutenticado,
+  ocultarSiNoEsRol
+} from "./auth.js";
+
 document.addEventListener("DOMContentLoaded", () => {
-  const contenedor = document.getElementById("items-carrito");
-  const resumen = document.getElementById("resumen-detalle");
+  const sesion = getSesion();
+
+  // Verifica que solo el CLIENTE pueda acceder al carrito
+  redirigirSiNoAutenticado("CLIENTE", "Debes iniciar sesión como cliente para acceder al carrito.");
+
+  // Oculta botones si no es cliente
+  ocultarSiNoEsRol("CLIENTE", "finalizarCompraBtn", "descargarReciboBtn");
+
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  const contenedor = document.getElementById("items-carrito");
 
   function actualizarCarrito() {
     contenedor.innerHTML = "";
@@ -35,8 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("total-compra").textContent = total.toLocaleString();
     localStorage.setItem("carrito", JSON.stringify(carrito));
-
-    // Reasignar eventos a los nuevos botones
     document.querySelectorAll(".eliminar-btn").forEach(btn => {
       btn.addEventListener("click", eliminarItem);
     });
@@ -50,47 +61,46 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function finalizarCompra() {
-  const clienteId = localStorage.getItem("clienteId"); // Asegúrate de guardar esto al iniciar sesión
-  const metodoPago = "efectivo"; // o recoger de un select
-  const telefonoContacto = "3001234567"; // pide al usuario
-  const cedulaContacto = "123456789"; // pide al usuario
+    const clienteId = sesion.clienteId;
+    const metodoPago = "efectivo";
+    const telefonoContacto = "3001234567";
+    const cedulaContacto = "123456789";
 
-  if (!clienteId || carrito.length === 0) {
-    alert("Falta información o el carrito está vacío.");
-    return;
-  }
-
- const productos = carrito.map(item => ({
-  productoId: item.id, // asegúrate que tenga id
-  cantidad: item.cantidad
-}));
-
-  fetch("http://localhost:8080/api/compras/realizar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-    clienteId,
-    metodoPago,
-    telefonoContacto,
-    cedulaContacto,
-    productos
-   })
-  })
-  
-  .then(res => res.json())
-  .then(data => {
-    if (data.exito) {
-      alert("Compra realizada con éxito.");
-      localStorage.removeItem("carrito");
-      location.reload();
-    } else {
-      alert("Error: " + data.mensaje);
+    if (!clienteId || carrito.length === 0) {
+      alert("Falta información o el carrito está vacío.");
+      return;
     }
-  })
-  .catch(error => {
-    alert("Error en la compra: " + error);
-  });
-}
+
+    const productos = carrito.map(item => ({
+      productoId: item.id,
+      cantidad: item.cantidad
+    }));
+
+    fetch("http://localhost:8080/api/compras/realizar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        clienteId,
+        metodoPago,
+        telefonoContacto,
+        cedulaContacto,
+        productos
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.exito) {
+          alert("Compra realizada con éxito.");
+          localStorage.removeItem("carrito");
+          location.reload();
+        } else {
+          alert("Error: " + data.mensaje);
+        }
+      })
+      .catch(error => {
+        alert("Error en la compra: " + error);
+      });
+  }
 
   function vaciarCarrito() {
     if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
@@ -153,15 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.save("factura_compra.pdf");
   }
 
-  // Eventos
   document.getElementById("finalizarCompraBtn").addEventListener("click", finalizarCompra);
-
   document.getElementById("vaciarCarritoBtn").addEventListener("click", vaciarCarrito);
   document.getElementById("descargarReciboBtn").addEventListener("click", generarFacturaPDF);
 
   actualizarCarrito();
 });
-
-
-
-

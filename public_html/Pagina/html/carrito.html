@@ -1,64 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carrito de Compras</title>
-  <link rel="stylesheet" href="../css/styleCarrito.css">
-  <link rel="stylesheet" href="../css/styleHeader.css">
-  <link rel="stylesheet" href="../css/styleFooter.css">
-</head>
-
-<body>
-  <!-- Barra de navegación -->
-  <div id="header-container"></div>
-
-  <main class="carrito-container">
-    <section class="lista-carrito">
-      <h2>Tu Carrito</h2>
-      <div id="items-carrito">
-        <!-- Aquí se insertarán dinámicamente los productos -->
-      </div>
-    </section>
-
-    <section class="resumen-carrito">
-      <h2>Resumen</h2>
-      <div id="resumen-detalle">
-        <p class="total">Total: $<span id="total-compra">0</span> COP</p>
-        <button class="checkout-btn" id="finalizarCompraBtn">Finalizar compra</button>
-        <button class="eliminar-btn" id="vaciarCarritoBtn">Vaciar carrito</button>
-      </div>
-    </section>
-  </main>
-
-  <div id="footer-container"></div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="../javascript/carrito.js"></script>
-
-  <script>
-    fetch("header.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("header-container").innerHTML = data;
-        const script = document.createElement("script");
-        script.src = "../javascript/header.js";
-        document.body.appendChild(script);
-      });
-
-    fetch("footer.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("footer-container").innerHTML = data;
-      });
-
-    fetch("icono.html")
-      .then(res => res.text())
-      .then(data => {
-        document.head.insertAdjacentHTML("beforeend", data);
-      });
-  </script>
-</body>
-
-</html>
+1) eliminar usuario, eliminar producto, modificar rol: -admin.html -admin.js
+2) comprar productos, vaciar carrito: -carrito.html -carrito.js
+3) ver todos productos, aplicar filtros: -catalogo.html -catalogo.js
+4) contactarse por correo con un admin: -contacto.html -contacto.js
+5) ver productos limitados, aplicar filtros: -index.html -index.js
+6) modificar datos del perfil: -perfil.html -perfil.js
+7) agregar al carrito: -producto.html -producto.js
+8) modificar productos en venta: -ventas.html -ventas.js
+9) entrar a los diferentes menus, cerrar sesion: -header.html -header.js

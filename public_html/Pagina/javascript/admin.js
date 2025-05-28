@@ -1,114 +1,73 @@
-document.addEventListener('DOMContentLoaded', () => {
-  
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const elementosPorPagina = 5;
+// admin.js
 
-  function crearBuscador(idInput, idTabla, datos, esUsuario) {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'Buscar...';
-    input.className = 'buscador';
+import { protegerRuta, fetchConToken, cerrarSesion } from "../auth.js";
 
-    const tabla = document.getElementById(idTabla);
-    tabla.parentElement.insertBefore(input, tabla);
+// Proteger esta página solo para administradores
+protegerRuta("ADMIN");
 
-    input.addEventListener('input', () => {
-      const filtro = input.value.toLowerCase();
-      const filtrados = datos.filter(d =>
-        d.nombre.toLowerCase().includes(filtro) ||
-        (d.email || d.vendedor).toLowerCase().includes(filtro)
-      );
-      mostrarPagina(idTabla, filtrados, 1, esUsuario);
-      agregarPaginacion(idTabla, filtrados, esUsuario);
-    });
-  }
+// Función para cargar usuarios
+async function cargarUsuarios() {
+  try {
+    const respuesta = await fetchConToken("/api/admin/usuarios");
+    if (!respuesta.ok) throw new Error("Error al obtener usuarios");
 
-  function mostrarPagina(idTabla, datos, pagina, esUsuario) {
-    const inicio = (pagina - 1) * elementosPorPagina;
-    const fin = inicio + elementosPorPagina;
-    const paginaDatos = datos.slice(inicio, fin);
-    const tabla = document.getElementById(idTabla).querySelector('tbody');
-    tabla.innerHTML = '';
-
-    paginaDatos.forEach(d => {
-      const fila = document.createElement('tr');
-      let acciones = '';
-
-      if (!esUsuario && (usuario.rol_id === 3 || usuario.rol_id === 4)) {
-        // Eliminar productos (admin y moderador)
-        acciones += `<button onclick="eliminar('${d.nombre}', 'producto')">Eliminar</button>`;
-      } else if (esUsuario && usuario.rol_id === 3) {
-        // Eliminar usuarios (solo admin)
-        acciones += `<button onclick="eliminar('${d.nombre}', 'usuario')">Eliminar</button>`;
-        // Asignar moderador (solo admin)
-        acciones += `<button class="btn-asignar" onclick="asignarModerador('${d.nombre}')">Asignar como Moderador</button>`;
-
-      }
-
-      fila.innerHTML = `
-      <td>${d.nombre}</td>
-      <td>${d.email || d.vendedor}</td>
-      <td>${acciones}</td>
-    `;
-      tabla.appendChild(fila);
-    });
-  }
-
-  function agregarPaginacion(idTabla, datos, esUsuario) {
-    const totalPaginas = Math.ceil(datos.length / elementosPorPagina);
-    const contenedor = document.getElementById('paginacion' + idTabla.replace('tabla', ''));
-    contenedor.innerHTML = '';
-
-    for (let i = 1; i <= totalPaginas; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      btn.addEventListener('click', () => {
-        mostrarPagina(idTabla, datos, i, esUsuario);
-      });
-      contenedor.appendChild(btn);
-    }
-  }
-
-  // Compradores
-  mostrarPagina('tablaCompradores', compradores, 1, true);
-  agregarPaginacion('tablaCompradores', compradores, true);
-  crearBuscador('inputCompradores', 'tablaCompradores', compradores, true);
-
-  // Vendedores
-  mostrarPagina('tablaVendedores', vendedores, 1, true);
-  agregarPaginacion('tablaVendedores', vendedores, true);
-  crearBuscador('inputVendedores', 'tablaVendedores', vendedores, true);
-
-  // Productos
-  mostrarPagina('tablaProductos', productos, 1, false);
-  agregarPaginacion('tablaProductos', productos, false);
-  crearBuscador('inputProductos', 'tablaProductos', productos, false);
-
-  // Gráfica de usuarios
-  new Chart(document.getElementById('graficaUsuarios'), {
-    type: 'bar',
-    data: {
-      labels: ['Compradores', 'Vendedores', 'Productos'],
-      datasets: [{
-        label: 'Cantidad',
-        data: [compradores.length, vendedores.length, productos.length],
-        backgroundColor: ['#66bb6a', '#43a047', '#2e7d32']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: 'Estadísticas Generales' }
-      }
-    }
-  });
-});
-
-function eliminar(nombre, tipo) {
-  if (tipo === 'usuario') {
-    alert(`Usuario "${nombre}" ha sido suspendido temporalmente.`);
-  } else {
-    alert(`Producto "${nombre}" ha sido eliminado.`);
+    const usuarios = await respuesta.json();
+    mostrarUsuarios(usuarios);
+  } catch (error) {
+    console.error("Error al cargar usuarios:", error);
+    alert("No se pudo cargar la lista de usuarios.");
   }
 }
+
+// Ejemplo de función de renderizado
+function mostrarUsuarios(lista) {
+  const contenedor = document.getElementById("lista-usuarios");
+  contenedor.innerHTML = "";
+
+  lista.forEach((usuario) => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${usuario.nombre}</td>
+      <td>${usuario.rol}</td>
+      <td>${usuario.activo ? "Activo" : "Suspendido"}</td>
+      <td>
+        <button class="suspender-btn" data-id="${usuario.id}">Suspender</button>
+      </td>
+    `;
+    contenedor.appendChild(fila);
+  });
+
+  // Delegación de eventos
+  document.querySelectorAll(".suspender-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      const id = e.target.dataset.id;
+      await suspenderUsuario(id);
+    });
+  });
+}
+
+// Función para suspender un usuario
+async function suspenderUsuario(id) {
+  try {
+    const respuesta = await fetchConToken(`/api/admin/usuarios/${id}/suspender`, {
+      method: "PUT"
+    });
+    if (!respuesta.ok) throw new Error("Error al suspender usuario");
+
+    alert("Usuario suspendido correctamente.");
+    cargarUsuarios(); // Refrescar lista
+  } catch (error) {
+    console.error("Error al suspender:", error);
+    alert("No se pudo suspender al usuario.");
+  }
+}
+
+// Evento de logout
+document.getElementById("cerrar-sesion-btn")?.addEventListener("click", () => {
+  cerrarSesion();
+});
+
+// Cargar todo al iniciar
+document.addEventListener("DOMContentLoaded", () => {
+  cargarUsuarios();
+});
