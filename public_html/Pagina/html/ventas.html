@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mis Ventas</title>
+    <link rel="stylesheet" href="../css/styleVentas.css">
+    <link rel="stylesheet" href="../css/styleHeader.css">
+    <link rel="stylesheet" href="../css/styleFooter.css">
+</head>
+
+<body>
+    <!-- Barra de navegación -->
+    <div id="header-container"></div>
+
+    <main>
+        <div class="acciones-venta">
+            <button id="btnSubirProducto">Subir nuevo producto</button>
+        </div>
+        <section class="productos-en-venta">
+            <h2>Productos en venta</h2>
+            <div class="grid-productos" id="enVenta"></div>
+        </section>
+        <section class="productos-vendidos">
+            <h2>Productos vendidos</h2>
+            <div class="grid-productos" id="vendidos"></div>
+        </section>
+    </main>
+    <div id="footer-container"></div>
+
+    <div id="modalProducto" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar" id="cerrarModal">&times;</span>
+            <h2>Subir nuevo producto</h2>
+            <form id="formProducto">
+                <label>Nombre del producto</label>
+                <input type="text" required>
+                <label>Precio</label>
+                <input type="number" step="1000" required>
+                <label>Categoría</label>
+                <select id="categoria" name="categoria" required>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="decoración">Decoración</option>
+                    <option value="envases">Envases</option>
+                    <option value="macetas">Macetas</option>
+                    <option value="muebles">Muebles</option>
+                    <option value="utileria">Utileria</option>
+                    <option value="otros">Otros</option>
+                </select>
+                <label>Imagen</label>
+                <input type="file" id="imagen" name="imagen" accept="image/*" required>
+                <button type="submit">Publicar producto</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalInfo" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitulo">Nombre del producto</h2>
+            <img id="modalImagen" src="" alt="Imagen del producto">
+            <p id="modalDescripcion"></p>
+            <p id="modalExtra"></p>
+        </div>
+    </div>
+
+    <div id="modalEditarProducto" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cerrarModalEditar">&times;</span>
+            <h2>Editar producto</h2>
+            <form id="formEditarProducto">
+                <input type="text" placeholder="Nombre del producto" required />
+                <input type="number" placeholder="Precio" required />
+                <input type="text" placeholder="Tipo" required />
+                <input type="text" placeholder="Imagen" required />
+                <button type="submit">Guardar cambios</button>
+            </form>
+        </div>
+    </div>
+    <div id="mensaje-acceso" class="mensaje-sesion">
+        Acceso denegado. Solo los vendedores pueden acceder.
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const usuario = JSON.parse(localStorage.getItem("usuario"));
+            if (!usuario || usuario.rol_id !== 2 ) {
+                const mensaje = document.getElementById("mensaje-acceso");
+                mensaje.classList.add("mostrar");
+
+                setTimeout(() => {
+                    mensaje.classList.remove("mostrar");
+                    window.location.href = "index.html";
+                }, 4000);
+            }
+        });
+    </script>
+
+    <script src="../javascript/ventas.js"></script>
+    <script>
+        fetch("header.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("header-container").innerHTML = data;
+            });
+
+        fetch("footer.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("footer-container").innerHTML = data;
+            });
+        fetch("icono.html")
+            .then(res => res.text())
+            .then(data => {
+                document.head.insertAdjacentHTML("beforeend", data);
+            });
+    </script>
+</body>
+
+</html>

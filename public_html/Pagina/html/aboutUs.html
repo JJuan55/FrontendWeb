@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre nosotros</title>
+    <link rel="stylesheet" href="../css/styleAboutUs.css">
+    <link rel="stylesheet" href="../css/styleHeader.css">
+    <link rel="stylesheet" href="../css/styleFooter.css">
+</head>
+
+<body>
+    <div id="header-container"></div>
+
+    <main class="Contenido-sobre-nosotros">
+        <section class="Presentacion">
+            <h1>Sobre Nosotros</h1>
+            <p>
+                Cada año, millones de toneladas de residuos plásticos terminan en vertederos y océanos, contaminando
+                nuestros ecosistemas y amenazando la vida silvestre. Creemos firmemente que es nuestra responsabilidad
+                colectiva transformar este desafío en una oportunidad. Existimos para ofrecer una solución tangible y
+                sostenible a este problema creciente, convirtiendo el plástico que otros descartan en una valiosa
+                materia prima para un futuro más limpio y circular.
+            </p>
+        </section>
+
+        <section class="mision-vision-valores">
+            <div class="mision">
+                <h2>Misión</h2>
+                <p>
+                    Nuestra misión es liderar la transformación del reciclaje de plásticos, maximizando la recuperación
+                    de materiales y fomentando una economía circular que beneficie al medio ambiente y a la sociedad.
+                </p>
+            </div>
+            <div class="vision">
+                <h2>Visión</h2>
+                <p>
+                    Convertirnos en el socio preferente para industrias que buscan soluciones de plásticos reciclados de
+                    alta calidad, consolidando nuestra posición como líderes en innovación y sostenibilidad.
+                </p>
+            </div>
+            <div class="valores">
+                <h2>Valores</h2>
+                <ul>
+                    <li>Sostenibilidad: Nuestro compromiso inquebrantable con el cuidado del medio ambiente y la
+                        promoción de prácticas responsables.</li>
+                    <li>Integridad: Actuamos con transparencia, honestidad y ética en todas nuestras operaciones y
+                        relaciones.</li>
+                    <li>Colaboración: Creemos en el poder de trabajar juntos con clientes, proveedores y comunidades
+                        para lograr un impacto mayor.</li>
+                </ul>
+            </div>
+        </section>
+        <section class="grafica-compras">
+            <h2>Compras Totales Realizadas</h2>
+            <canvas id="graficoCompras"></canvas>
+        </section>
+        <script src="../javascript/aboutUs.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </main>
+    <div id="footer-container"></div>
+    <script>
+        fetch("header.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("header-container").innerHTML = data;
+            })
+            .then(() => {
+                const script = document.createElement("script");
+                script.src = "../javascript/header.js";
+                document.body.appendChild(script);
+            });
+        fetch("footer.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("footer-container").innerHTML = data;
+            });
+        fetch("icono.html")
+            .then(res => res.text())
+            .then(data => {
+                document.head.insertAdjacentHTML("beforeend", data);
+            });
+    </script>
+
+</body>
+
+</html>

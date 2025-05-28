@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Perfil de Usuario</title>
+  <link rel="stylesheet" href="../css/stylePerfil.css">
+  <link rel="stylesheet" href="../css/styleFooter.css">
+</head>
+
+<body>
+  <header>
+    <div class="top-bar">
+      <a href="index.html" class="volver-btn boton-estilo">← Volver a la tienda</a>
+    </div>
+    <div class="perfil-header">
+      <button id="btn-vendedor" class="vendedor-btn boton-estilo">¿Quieres ser vendedor?</button>
+      <button class="cerrar-sesion boton-estilo">Cerrar sesión</button>
+      <h1>Mi Perfil</h1>
+    </div>
+  </header>
+
+  <main class="perfil-container">
+    <section class="info-usuario">
+
+      <h2>Información personal</h2>
+
+      <form id="form-usuario">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo">
+
+        <label for="correo">Correo electrónico:</label>
+        <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com">
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" placeholder="Tu dirección">
+
+        <button type="submit">Guardar Cambios</button>
+      </form>
+    </section>
+
+    <!-- Sección de Pedidos Actuales -->
+    <section class="pedidos-actuales">
+      <h2>Pedidos actuales</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Productos</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-pedidos">
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sección de Historial de Compras -->
+    <section class="historial-compras">
+      <h2>Historial de Compras</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Productos</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-compras">
+        </tbody>
+      </table>
+    </section>
+
+
+  </main>
+  <div id="footer-container"></div>
+  <!-- Modal del formulario para ser vendedor -->
+  <div id="formulario-vendedor" class="modal">
+    <div class="modal-contenido">
+      <span id="cerrar-modal" class="cerrar">&times;</span>
+      <h2>Solicitud para ser vendedor</h2>
+      <form id="form-vendedor">
+        <label for="categoria">Categoría principal de productos:</label>
+        <input type="text" id="categoria" name="categoria" placeholder="Ej. decoración, muebles, etc.">
+
+        <label for="nombre-v">Confirma tu nombre:</label>
+        <input type="text" id="nombre-v" name="nombre-v" placeholder="Su nombre completo">
+
+        <label for="telefono-v">Confirma tu número de celular:</label>
+        <input type="tel" id="telefono-v" name="telefono-v"
+          placeholder="Ingrese el número con el que los clientes se van a comunicar">
+
+        <label for="correo-v">Confirma tu correo:</label>
+        <input type="email" id="correo-v" name="correo-v" placeholder="El correo con el que registro la cuenta">
+
+        <label for="ubicacion">Ubicación de origen:</label>
+        <input type="text" id="ubicacion" name="ubicacion" placeholder="Localidad / ciudad">
+
+        <button type="submit" class="enviar-solicitud">Enviar solicitud</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../javascript/perfil.js"></script>
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer-container").innerHTML = data;
+      });
+    fetch("icono.html")
+      .then(res => res.text())
+      .then(data => {
+        document.head.insertAdjacentHTML("beforeend", data);
+      });
+  </script>
+
+</body>
+
+</html>

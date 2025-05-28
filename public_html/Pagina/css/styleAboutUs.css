@@ -1,0 +1,108 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f1f8e9;
+  color: #2e7d32;
+  line-height: 1.6;
+}
+
+.contenido-sobre-nosotros {
+  padding: 2rem;
+  max-width: 500px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Títulos */
+h1 {
+  font-size: 30px;
+  text-align: center;
+  color: #1b5e20;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 30px;
+  color: #1b5e20;
+  text-align: center;
+  border-bottom: 2px solid #a5d6a7;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Presentación */
+.presentacion p {
+  font-size: 1.2rem;
+  text-align: justify;
+  background: linear-gradient(to right, #e8f5e9, #f1f8e9);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Secciones */
+.mision-vision-valores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.mision,
+.vision,
+.valores {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-left: 6px solid #2e7d32;
+}
+
+.mision h2,
+.vision h2,
+.valores h2 {
+  font-size: 1.6rem;
+}
+
+.mision p,
+.vision p,
+.valores ul {
+  font-size: 1rem;
+  text-align: justify;
+}
+
+.valores ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  line-height: 1.6;
+}
+
+.grafica-compras {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.grafica-compras h2 {
+  margin-bottom: 1.5rem;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+  margin-top: 1rem;
+  border: 1px solid #c8e6c9;
+  border-radius: 10px;
+}

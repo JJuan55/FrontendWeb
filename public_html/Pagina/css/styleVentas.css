@@ -1,0 +1,278 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+main {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+h1,
+h2 {
+  color: #2e7d32;
+}
+
+.acciones-venta {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+#btnSubirProducto {
+  background-color: #00796b;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#btnSubirProducto:hover {
+  background-color: #004d40;
+}
+
+.grid-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.producto {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  gap: 15px;
+  cursor: pointer;
+}
+
+.producto img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.producto h3 {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.producto p {
+  margin: 5px 0 0;
+  color: #388e3c;
+  font-weight: bold;
+}
+
+.producto .info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-contenido {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border: 2px solid #76b947;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.modal-contenido h2 {
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+.modal-contenido input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #81c784;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.modal-contenido button {
+  background: #43a047;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.modal-contenido button:hover {
+  background: #2e7d32;
+}
+
+.cerrar {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 25px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Estilo para el modal de información */
+#modalInfo {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+#modalInfo .modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border: 2px solid #76b947;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#modalInfo h2 {
+  margin-top: 0;
+  color: #2e7d32;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#modalInfo img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+#modalInfo p {
+  font-size: 1em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#modalInfo .close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 25px;
+  cursor: pointer;
+  color: #333;
+}
+
+.botones-venta {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.boton-editar,
+.boton-eliminar {
+  padding: 6px 12px;
+  font-size: 0.9em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.boton-editar {
+  background-color: #1976d2;
+  color: white;
+}
+
+.boton-eliminar {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.boton-editar:hover {
+  background-color: #0d47a1;
+}
+
+.boton-eliminar:hover {
+  background-color: #b71c1c;
+}
+
+#modalEditarProducto {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#modalEditarProducto .modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+#modalEditarProducto .close {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mensaje-sesion {
+  position: fixed;
+  top: 250px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #e41d1d;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  font-weight: bold;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.mensaje-sesion.mostrar {
+  opacity: 1;
+  pointer-events: auto;
+}

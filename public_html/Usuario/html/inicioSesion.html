@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="../css/styleInicioSesion.css">
+    <link rel="icon" href="../css/logo.png">
+    <meta name="google-signin-client_id" content="TU_CLIENT_ID.apps.googleusercontent.com"> <!-- Reemplaza TU_CLIENT_ID -->
+</head>
+
+<body>
+    <a href="../../Pagina/html/index.html" class="volver-btn">← Volver a la página principal</a>
+    <section class="form-login">
+        <h5>Iniciar sesión</h5>
+        <form id="loginForm">
+            <input class="controls" type="email" name="correo" id="correo" placeholder="Tu Correo" required>
+            <input class="controls" type="password" name="contrasena" id="contrasena" placeholder="Tu Contraseña" required>
+            <input class="buttons" type="submit" value="Ingresar">
+            <button class="social-button google" type="button" onclick="signIn()">Iniciar sesión con Google</button>
+            <div id="google-login-result"></div>
+        </form>
+        <p><a href="recuperarContraseña.html">¿Olvidaste tu Contraseña?</a></p>
+        <p><a href="registro.html">No estoy registrado</a></p>
+    </section>
+
+    <script src="../javascript/inicioSesion.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</body>
+
+</html>

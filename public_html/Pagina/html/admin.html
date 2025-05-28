@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+  <link rel="stylesheet" href="../css/styleAdmin.css">
+  <link rel="stylesheet" href="../css/styleHeader.css">
+  <link rel="stylesheet" href="../css/styleFooter.css">
+
+</head>
+
+<body>
+  <div id="header-container"></div>
+
+  <main class="panel-admin">
+    <h1>Panel de Administración y Moderación</h1>
+    <section class="datos-tablas">
+      <h2>Usuarios Registrados</h2>
+      <div class="tablas">
+        <div class="tabla">
+          <h3>Compradores</h3>
+          <table id="tablaCompradores">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="paginacion" id="paginacionCompradores"></div>
+        </div>
+
+        <div class="tabla">
+          <h3>Vendedores</h3>
+          <table id="tablaVendedores">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="paginacion" id="paginacionVendedores"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Productos Subidos</h2>
+      <table id="tablaProductos">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Vendedor</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="paginacion" id="paginacionProductos"></div>
+    </section>
+
+    <section class="estadisticas">
+      <h2>Estadísticas del Sitio</h2>
+      <canvas id="graficaUsuarios" width="400" height="200"></canvas>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <div id="mensaje-acceso" class="mensaje-sesion">
+    Acceso denegado. Solo administración pueden acceder.
+  </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario || (usuario.rol_id !== 3 && usuario.rol_id !== 4)) {
+        const mensaje = document.getElementById("mensaje-acceso");
+        mensaje.classList.add("mostrar");
+        setTimeout(() => {
+          mensaje.classList.remove("mostrar");
+          window.location.href = "index.html";
+        }, 4000);
+      }
+    });
+  </script>
+
+  <script src="../javascript/admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header-container").innerHTML = data;
+      });
+
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer-container").innerHTML = data;
+      });
+    fetch("icono.html")
+      .then(res => res.text())
+      .then(data => {
+        document.head.insertAdjacentHTML("beforeend", data);
+      });
+  </script>
+</body>
+
+</html>
