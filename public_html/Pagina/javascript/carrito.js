@@ -1,4 +1,8 @@
+import { protegerRuta, obtenerUsuario, fetchConToken } from './auth.js';
+
 document.addEventListener("DOMContentLoaded", () => {
+  protegerRuta(); // Solo requiere sesión iniciada (cliente)
+
   const contenedor = document.getElementById("items-carrito");
   const resumen = document.getElementById("resumen-detalle");
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -54,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const usuario = obtenerUsuario();
     if (!usuario || !usuario.id) {
       alert("Debes estar registrado para realizar una compra.");
       return;
@@ -69,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const respuesta = await fetch("/api/compras/realizar", {
+      const respuesta = await fetchConToken("/api/compras/realizar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -160,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   actualizarCarrito();
 });
+
 
 
 

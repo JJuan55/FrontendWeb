@@ -1,22 +1,20 @@
-<<<<<<< HEAD
-// admin.js
+import { protegerRuta, obtenerUsuario, fetchConToken } from './auth.js';
 
-import { protegerRuta, fetchConToken, cerrarSesion } from "../auth.js";
-=======
 document.addEventListener('DOMContentLoaded', async () => {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  protegerRuta("ADMIN");
+
+  const usuario = obtenerUsuario();
   const elementosPorPagina = 5;
 
   let compradores = [];
   let vendedores = [];
   let productos = [];
 
-  // Obtener datos del backend
   async function obtenerDatos() {
     const [clientesRes, vendedoresRes, productosRes] = await Promise.all([
-      fetch('/api/admin/clientes'),
-      fetch('/api/admin/vendedores'),
-      fetch('/api/admin/productos')
+      fetchConToken('/api/admin/clientes'),
+      fetchConToken('/api/admin/vendedores'),
+      fetchConToken('/api/admin/productos')
     ]);
     compradores = await clientesRes.json();
     vendedores = await vendedoresRes.json();
@@ -45,79 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     input.type = 'text';
     input.placeholder = 'Buscar...';
     input.className = 'buscador';
->>>>>>> 45e502ba7cc97d8dcd6f660923d6e7caa4d2160d
-
-// Proteger esta página solo para administradores
-protegerRuta("ADMIN");
-
-// Función para cargar usuarios
-async function cargarUsuarios() {
-  try {
-    const respuesta = await fetchConToken("/api/admin/usuarios");
-    if (!respuesta.ok) throw new Error("Error al obtener usuarios");
-
-<<<<<<< HEAD
-    const usuarios = await respuesta.json();
-    mostrarUsuarios(usuarios);
-  } catch (error) {
-    console.error("Error al cargar usuarios:", error);
-    alert("No se pudo cargar la lista de usuarios.");
+    // Puedes completar aquí el código de filtrado si lo estás usando
   }
-}
 
-// Ejemplo de función de renderizado
-function mostrarUsuarios(lista) {
-  const contenedor = document.getElementById("lista-usuarios");
-  contenedor.innerHTML = "";
-
-  lista.forEach((usuario) => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${usuario.nombre}</td>
-      <td>${usuario.rol}</td>
-      <td>${usuario.activo ? "Activo" : "Suspendido"}</td>
-      <td>
-        <button class="suspender-btn" data-id="${usuario.id}">Suspender</button>
-      </td>
-    `;
-    contenedor.appendChild(fila);
-  });
-
-  // Delegación de eventos
-  document.querySelectorAll(".suspender-btn").forEach((btn) => {
-    btn.addEventListener("click", async (e) => {
-      const id = e.target.dataset.id;
-      await suspenderUsuario(id);
-    });
-  });
-}
-
-// Función para suspender un usuario
-async function suspenderUsuario(id) {
-  try {
-    const respuesta = await fetchConToken(`/api/admin/usuarios/${id}/suspender`, {
-      method: "PUT"
-    });
-    if (!respuesta.ok) throw new Error("Error al suspender usuario");
-
-    alert("Usuario suspendido correctamente.");
-    cargarUsuarios(); // Refrescar lista
-  } catch (error) {
-    console.error("Error al suspender:", error);
-    alert("No se pudo suspender al usuario.");
-  }
-}
-
-// Evento de logout
-document.getElementById("cerrar-sesion-btn")?.addEventListener("click", () => {
-  cerrarSesion();
-});
-
-// Cargar todo al iniciar
-document.addEventListener("DOMContentLoaded", () => {
-  cargarUsuarios();
-});
-=======
   function mostrarPagina(idTabla, datos, pagina, esUsuario) {
     const inicio = (pagina - 1) * elementosPorPagina;
     const fin = inicio + elementosPorPagina;
@@ -181,34 +109,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Funciones globales
   window.eliminarProducto = async function (productoId) {
     if (confirm('¿Seguro que deseas eliminar este producto?')) {
-      const res = await fetch(`/api/admin/productos/${productoId}`, {
+      const res = await fetchConToken(`/api/admin/productos/${productoId}`, {
         method: 'DELETE'
       });
       alert(await res.text());
-      obtenerDatos(); // refrescar tablas
+      obtenerDatos();
     }
   };
 
   window.cambiarEstadoUsuario = async function (usuarioId) {
-    const res = await fetch(`/api/admin/usuarios/${usuarioId}/estado?estado=suspendido`, {
+    const res = await fetchConToken(`/api/admin/usuarios/${usuarioId}/estado?estado=suspendido`, {
       method: 'PUT'
     });
     alert(await res.text());
-    obtenerDatos(); // refrescar
+    obtenerDatos();
   };
 
   window.asignarModerador = async function (usuarioId) {
-    const res = await fetch(`/api/admin/usuarios/${usuarioId}/rol?rol=moderador`, {
+    const res = await fetchConToken(`/api/admin/usuarios/${usuarioId}/rol?rol=moderador`, {
       method: 'PUT'
     });
     alert(await res.text());
-    obtenerDatos(); // refrescar
+    obtenerDatos();
   };
 
-  // Cargar datos iniciales
   obtenerDatos();
 });
-
->>>>>>> 45e502ba7cc97d8dcd6f660923d6e7caa4d2160d
