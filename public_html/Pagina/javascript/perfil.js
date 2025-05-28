@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Manejo de envío del formulario
   const formVendedor = document.getElementById("form-vendedor");
-  formVendedor.addEventListener("submit", (e) => {
+  formVendedor.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const data = {
@@ -33,12 +33,31 @@ document.addEventListener("DOMContentLoaded", () => {
       ubicacion: document.getElementById("ubicacion").value
     };
 
-    console.log("Solicitud de vendedor:", data);
+    try {
+      const response = await fetch("/api/vendedor/registro", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
 
-    // Aquí puedes enviar la info a tu servidor si lo deseas
-    alert("¡Solicitud enviada! Pronto nos pondremos en contacto.");
-    modal.style.display = "none";
-    formVendedor.reset();
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert("Error: " + (errorData.error || "No se pudo enviar la solicitud"));
+        return;
+      }
+
+      const result = await response.json();
+      console.log("Respuesta del servidor:", result);
+      alert("¡Solicitud enviada! Pronto nos pondremos en contacto.");
+      modal.style.display = "none";
+      formVendedor.reset();
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+      alert("Ocurrió un error al enviar la solicitud.");
+    }
   });
 });
+
 
