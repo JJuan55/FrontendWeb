@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".precio").textContent = `$${producto.precio.toLocaleString()} COP`;
   document.querySelector(".descripcion").textContent = producto.descripcion || "Este producto no tiene descripción.";
   document.querySelector(".vendedor").innerHTML = `<strong>Vendido por:</strong> ${producto.vendedor || "Vendedor anónimo"}`;
+  document.querySelector("#producto-disponibilidad").textContent = producto.disponible ? "Disponible" : "No disponible";
 
   const btnAgregar = document.querySelector(".btn-carrito");
   const usuario = JSON.parse(localStorage.getItem("usuario"));
@@ -29,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnAgregar.style.cursor = "not-allowed";
   }
 
-   btnAgregar.addEventListener("click", () => {
+  btnAgregar.addEventListener("click", () => {
     if (!usuario) {
       mostrarMensajeSesion();
       return;
@@ -37,8 +38,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const cantidad = parseInt(document.querySelector("#cantidad").value);
     if (cantidad > 0) {
-      alert(`Se agregaron ${cantidad} unidades de "${producto.nombre}" al carrito.`);
-      // Aquí podrías guardar los datos en localStorage o enviarlos al backend
+      const dto = {
+        idUsuario: usuario.id,  // Asegúrate de que el objeto 'usuario' tenga un campo 'id'
+        idProducto: producto.id, // Asegúrate de que el objeto 'producto' tenga un campo 'id'
+        cantidad: cantidad
+      };
+
+      fetch("/api/carrito/agregar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dto)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Error al agregar al carrito");
+          return res.text();
+        })
+        .then(msg => {
+          alert(msg);  // Muestra la respuesta del servidor
+        })
+        .catch(err => {
+          alert("Hubo un error al agregar el producto al carrito: " + err.message);
+        });
     }
   });
 

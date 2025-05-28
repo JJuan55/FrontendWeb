@@ -1,43 +1,3 @@
-// Simulación de productos (esto será reemplazado por datos de la base de datos en el futuro)
-const productos = [
-  {
-    nombre: "Bolso reciclado",
-    tipo: "bolsos",
-    precio: 18000,
-    disponible: true,
-    descripcion: "Bolso hecho a mano con materiales reciclados.",
-    vendedor: "María López",
-    imagen: "https://i.pinimg.com/222x/82/c4/3f/82c43f3ad354a70f2241eb83a8d7b750.jpg"
-  },
-  {
-    nombre: "Maceta ecológica",
-    tipo: "macetas",
-    precio: 12000,
-    disponible: true,
-    descripcion: "Maceta ecológica ideal para tu jardín.",
-    vendedor: "Carlos Ruiz",
-    imagen: "https://i.pinimg.com/236x/24/3e/bd/243ebdb3a754407943a2d1db8b4575ab.jpg"
-  },
-  {
-    nombre: "Lámpara con botellas",
-    tipo: "decoración",
-    precio: 35000,
-    disponible: false,  
-    descripcion: "Lámpara elaborada con botellas recicladas.",
-    vendedor: "Luz Verde",
-    imagen: "https://i.pinimg.com/474x/c8/c6/59/c8c65949d7d1bf33192937dbbdc3d258.jpg"
-  },
-  {
-    nombre: "Florero reciclado",
-    tipo: "decoración",
-    precio: 16000,
-    disponible: true,
-    descripcion: "Florero moderno hecho de materiales reutilizados.",
-    vendedor: "Juan Moreno",
-    imagen: "https://i.pinimg.com/236x/d4/06/a1/d406a1d91e479f615fa9d8dce013c2fc.jpg"
-  }
-];
-
 let paginaActual = 1;
 const productosPorPagina = 8;
 
@@ -70,16 +30,15 @@ function renderizarProductos(lista) {
   renderizarControles(lista.length);
 }
 
-// Filtro de productos
+// Escuchar envío de formulario de filtros
 document.getElementById("formFiltros").addEventListener("submit", function (e) {
   e.preventDefault();
-  paginaActual = 1; // Reiniciar a la primera página
-
-  filtrarProductos();
+  paginaActual = 1;
+  obtenerProductosDelBackend();
 });
 
-// Mostrar todos al cargar
-renderizarProductos(productos);
+// Al cargar la página, obtener todos los productos sin filtros
+obtenerProductosDelBackend();
 
 function renderizarControles(total) {
   const contenedor = document.getElementById("paginacion");
@@ -93,39 +52,45 @@ function renderizarControles(total) {
     btn.disabled = i === paginaActual;
     btn.addEventListener("click", () => {
       paginaActual = i;
-      filtrarProductos();
+      obtenerProductosDelBackend();
     });
     contenedor.appendChild(btn);
   }
 }
 
-function filtrarProductos() {
+// Obtener productos desde el backend con filtros
+function obtenerProductosDelBackend() {
   const form = document.getElementById("formFiltros");
-  if (!form) {
-    renderizarProductos(productos);
-    return;
-  }
-
   const formData = new FormData(form);
-  const nombre = formData.get("nombre")?.toLowerCase() || "";
+  const params = new URLSearchParams();
+
+  const nombre = formData.get("nombre");
+  if (nombre) params.append("nombre", nombre);
+
   const tipos = formData.getAll("tipo");
+  tipos.forEach(t => params.append("tipo", t));
+
   const materiales = formData.getAll("material");
-  const precioMin = parseFloat(formData.get("precioMin")) || 0;
-  const precioMax = parseFloat(formData.get("precioMax")) || Infinity;
-  const disponible = formData.get("disponible") === "on";
-  const vendedor = formData.get("vendedor")?.toLowerCase() || "";
+  materiales.forEach(m => params.append("material", m));
 
-  const filtrados = productos.filter(p => {
-    return (
-      p.nombre.toLowerCase().includes(nombre) &&
-      (tipos.length === 0 || tipos.includes(p.tipo)) &&
-      (materiales.length === 0 || materiales.includes(p.material)) &&
-      p.precio >= precioMin &&
-      p.precio <= precioMax &&
-      (!disponible || p.disponible) &&
-      (!vendedor || p.vendedor.toLowerCase().includes(vendedor))
-      );
-  });
+  const precioMin = formData.get("precioMin");
+  if (precioMin) params.append("precioMin", precioMin);
 
-  renderizarProductos(filtrados);
+  const precioMax = formData.get("precioMax");
+  if (precioMax) params.append("precioMax", precioMax);
+
+  const disponible = formData.get("disponible");
+  if (disponible === "on") params.append("disponible", "true");
+
+  const vendedor = formData.get("vendedor");
+  if (vendedor) params.append("vendedor", vendedor);
+
+  fetch(`/api/productos/todo?${params.toString()}`)
+    .then(res => res.json())
+    .then(data => {
+      renderizarProductos(data);
+    })
+    .catch(err => {
+      console.error("Error al obtener productos:", err);
+    });
 }

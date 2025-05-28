@@ -1,20 +1,7 @@
-import {
-  getSesion,
-  redirigirSiNoAutenticado,
-  ocultarSiNoEsRol
-} from "./auth.js";
-
 document.addEventListener("DOMContentLoaded", () => {
-  const sesion = getSesion();
-
-  // Verifica que solo el CLIENTE pueda acceder al carrito
-  redirigirSiNoAutenticado("CLIENTE", "Debes iniciar sesión como cliente para acceder al carrito.");
-
-  // Oculta botones si no es cliente
-  ocultarSiNoEsRol("CLIENTE", "finalizarCompraBtn", "descargarReciboBtn");
-
-  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
   const contenedor = document.getElementById("items-carrito");
+  const resumen = document.getElementById("resumen-detalle");
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
   function actualizarCarrito() {
     contenedor.innerHTML = "";
@@ -48,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("total-compra").textContent = total.toLocaleString();
     localStorage.setItem("carrito", JSON.stringify(carrito));
+
     document.querySelectorAll(".eliminar-btn").forEach(btn => {
       btn.addEventListener("click", eliminarItem);
     });
@@ -60,46 +48,50 @@ document.addEventListener("DOMContentLoaded", () => {
     actualizarCarrito();
   }
 
-  function finalizarCompra() {
-    const clienteId = sesion.clienteId;
-    const metodoPago = "efectivo";
-    const telefonoContacto = "3001234567";
-    const cedulaContacto = "123456789";
-
-    if (!clienteId || carrito.length === 0) {
-      alert("Falta información o el carrito está vacío.");
+  async function finalizarCompra() {
+    if (carrito.length === 0) {
+      alert("Tu carrito está vacío.");
       return;
     }
 
-    const productos = carrito.map(item => ({
-      productoId: item.id,
-      cantidad: item.cantidad
-    }));
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    if (!usuario || !usuario.id) {
+      alert("Debes estar registrado para realizar una compra.");
+      return;
+    }
 
-    fetch("http://localhost:8080/api/compras/realizar", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        clienteId,
-        metodoPago,
-        telefonoContacto,
-        cedulaContacto,
-        productos
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.exito) {
-          alert("Compra realizada con éxito.");
-          localStorage.removeItem("carrito");
-          location.reload();
-        } else {
-          alert("Error: " + data.mensaje);
-        }
-      })
-      .catch(error => {
-        alert("Error en la compra: " + error);
+    const peticionCompra = {
+      usuarioId: usuario.id,
+      productos: carrito.map(item => ({
+        productoId: item.id,
+        cantidad: item.cantidad
+      }))
+    };
+
+    try {
+      const respuesta = await fetch("/api/compras/realizar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(peticionCompra)
       });
+
+      const data = await respuesta.json();
+
+      if (respuesta.ok && data.exito) {
+        generarFacturaPDF();
+        alert("Compra finalizada con éxito. ¡Gracias!");
+        carrito = [];
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        actualizarCarrito();
+      } else {
+        alert(`Error al realizar la compra: ${data.mensaje || "Intenta más tarde"}`);
+      }
+    } catch (error) {
+      console.error("Error en la compra:", error);
+      alert("No se pudo realizar la compra. Intenta más tarde.");
+    }
   }
 
   function vaciarCarrito() {
@@ -125,8 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
     y += 15;
     doc.setFontSize(12);
     doc.text("Detalle de la compra:", 14, y);
-
     y += 10;
+
     doc.setFontSize(10);
     doc.text("Producto", 14, y);
     doc.text("Cant.", 80, y);
@@ -155,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
     y += 10;
     doc.setFontSize(12);
     doc.text(`Total: $${total.toLocaleString()} COP`, 160, y);
-
     y += 20;
     doc.setFontSize(10);
     doc.text("¡Gracias por tu compra!", 105, y, { align: "center" });
@@ -163,9 +154,14 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.save("factura_compra.pdf");
   }
 
+  // Eventos
   document.getElementById("finalizarCompraBtn").addEventListener("click", finalizarCompra);
   document.getElementById("vaciarCarritoBtn").addEventListener("click", vaciarCarrito);
-  document.getElementById("descargarReciboBtn").addEventListener("click", generarFacturaPDF);
 
   actualizarCarrito();
 });
+
+
+
+
+

@@ -1,99 +1,179 @@
-const modalEditar = document.getElementById('modalEditarProducto');
-const cerrarModalEditar = document.getElementById('cerrarModalEditar');
-const formEditar = document.getElementById('formEditarProducto');
+document.addEventListener('DOMContentLoaded', () => {
+  const btnSubir = document.getElementById('btnSubirProducto');
+  const modal = document.getElementById('modalProducto');
+  const cerrarModal = document.getElementById('cerrarModal');
+  const form = document.getElementById('formProducto');
+  const contenedorVenta = document.getElementById('enVenta');
+  const contenedorVendidos = document.getElementById('vendidos');
 
-const modalInfo = document.getElementById('modalInfo');
-const cerrarModalInfo = modalInfo.querySelector('.close');
+  const modalEditar = document.getElementById('modalEditarProducto');
+  const cerrarModalEditar = document.getElementById('cerrarModalEditar');
+  const formEditar = document.getElementById('formEditarProducto');
 
-const contenedorVenta = document.getElementById('enVenta');
-const contenedorVendidos = document.getElementById('vendidos');
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const idVendedor = usuario?.id;
 
-let productosEnVenta = [];
-// Si quieres productos vendidos, aquí puedes cargar también
+  let productoEditando = null;
 
-// Obtener usuario (simulado para URL; cambia según tu lógica real)
-const usuario = JSON.parse(localStorage.getItem('usuario')) || { id: 1 };
+  const renderProductos = (lista, contenedor, esVendido = false) => {
+    contenedor.innerHTML = '';
+    lista.forEach((p, index) => {
+      const productoDiv = document.createElement('div');
+      productoDiv.classList.add('producto');
 
-// ---------------------- Función para cargar productos --------------------
-async function cargarProductos() {
-  try {
-    const res = await fetch(`http://localhost:8080/api/productos/vendedor/${usuario.id}`);
-    if (!res.ok) throw new Error('No se pudo obtener productos');
-    productosEnVenta = await res.json();
-    renderProductos(productosEnVenta, contenedorVenta, false);
-  } catch (e) {
-    contenedorVenta.innerHTML = '<p>Error cargando productos en venta</p>';
-    console.error(e);
-  }
-}
+      const imagen = document.createElement('img');
+      imagen.src = p.imagen;
+      imagen.alt = p.nombre;
 
-// ---------------------- Renderizar productos -------------------------------
-function renderProductos(lista, contenedor, esVendido = false) {
-  contenedor.innerHTML = '';
+      const nombre = document.createElement('h3');
+      nombre.textContent = p.nombre;
 
-  if (!lista || lista.length === 0) {
-    const mensaje = document.createElement('p');
-    mensaje.textContent = 'No hay productos para mostrar.';
-    mensaje.classList.add('mensaje-no-productos'); // opcional para estilos CSS
-    contenedor.appendChild(mensaje);
-    return;
-  }
+      const precio = document.createElement('p');
+      precio.textContent = `$${p.precio.toFixed(2)}`;
 
-  lista.forEach((p, index) => {
-    const div = document.createElement('div');
-    div.classList.add('producto');
+      productoDiv.appendChild(imagen);
+      productoDiv.appendChild(nombre);
+      productoDiv.appendChild(precio);
 
-    const img = document.createElement('img');
-    img.src = p.imagen || '';
-    img.alt = p.nombre || 'Producto';
+      if (!esVendido) {
+        const contenedorBotones = document.createElement('div');
+        contenedorBotones.classList.add('botones-venta');
 
-    const h3 = document.createElement('h3');
-    h3.textContent = p.nombre || '';
+        const btnEditar = document.createElement('button');
+        btnEditar.classList.add('boton-editar');
+        btnEditar.textContent = 'Editar venta';
+        btnEditar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          productoEditando = p;
+          abrirModalEdicion(p);
+        });
 
-    const precio = document.createElement('p');
-    precio.textContent = p.precio !== undefined ? `$${p.precio.toFixed(2)}` : '';
+        const btnEliminar = document.createElement('button');
+        btnEliminar.classList.add('boton-eliminar');
+        btnEliminar.textContent = 'Eliminar venta';
+        btnEliminar.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (confirm(`¿Estás seguro de eliminar "${p.nombre}"?`)) {
+            const response = await fetch(`/api/vendedor/productos/${p.id}?idVendedor=${idVendedor}`, {
+              method: 'DELETE'
+            });
+            const msg = await response.text();
+            alert(msg);
+            if (response.ok) {
+              productosEnVenta.splice(index, 1);
+              renderProductos(productosEnVenta, contenedorVenta);
+            }
+          }
+        });
 
-    div.appendChild(img);
-    div.appendChild(h3);
-    div.appendChild(precio);
+        contenedorBotones.appendChild(btnEditar);
+        contenedorBotones.appendChild(btnEliminar);
+        productoDiv.appendChild(contenedorBotones);
+      }
 
-    if (!esVendido) {
-      const botonesDiv = document.createElement('div');
-      botonesDiv.classList.add('botones-venta');
-
-      const btnEditar = document.createElement('button');
-      btnEditar.textContent = 'Editar venta';
-      btnEditar.classList.add('boton-editar');
-      btnEditar.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        abrirModalEditar(p, index);
+      productoDiv.addEventListener('click', () => {
+        mostrarInfoProducto(
+          p.nombre,
+          p.descripcion || 'Sin descripción',
+          esVendido ? p.comprador : null,
+          esVendido ? '2024-12-01' : null,
+          p.imagen
+        );
       });
 
-      const btnEliminar = document.createElement('button');
-      btnEliminar.textContent = 'Eliminar venta';
-      btnEliminar.classList.add('boton-eliminar');
-      btnEliminar.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        eliminarProducto(p.id, index);
-      });
+      contenedor.appendChild(productoDiv);
+    });
+  };
 
-      botonesDiv.appendChild(btnEditar);
-      botonesDiv.appendChild(btnEliminar);
-      div.appendChild(botonesDiv);
-    }
+  const abrirModalEdicion = (producto) => {
+    const [inputNombre, inputPrecio, inputTipo, inputImagen] = formEditar.querySelectorAll('input');
+    inputNombre.value = producto.nombre;
+    inputPrecio.value = producto.precio;
+    inputTipo.value = producto.tipo;
+    inputImagen.value = producto.imagen;
 
-    div.addEventListener('click', () => {
-      mostrarInfoProducto(
-        p.nombre,
-        p.descripcion || 'Sin descripción',
-        esVendido ? p.comprador : null,
-        esVendido ? p.fechaVenta : null,
-        p.imagen
-      );
+    modalEditar.style.display = 'block';
+  };
+
+  formEditar.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const [nombre, precio, tipo, imagen] = formEditar.querySelectorAll('input');
+
+    const productoActualizado = {
+      nombre: nombre.value,
+      precio: parseInt(precio.value),
+      tipo: tipo.value,
+      imagen: imagen.value
+    };
+
+    const response = await fetch(`/api/vendedor/productos/${productoEditando.id}?idVendedor=${idVendedor}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productoActualizado)
     });
 
-    contenedor.appendChild(div);
+    const msg = await response.text();
+    alert(msg);
+
+    if (response.ok) {
+      const index = productosEnVenta.findIndex(p => p.id === productoEditando.id);
+      productosEnVenta[index] = { ...productoEditando, ...productoActualizado };
+      renderProductos(productosEnVenta, contenedorVenta);
+      modalEditar.style.display = 'none';
+    }
   });
+
+  renderProductos(productosEnVenta, contenedorVenta, false);
+  renderProductos(productosVendidos, contenedorVendidos, true);
+
+  btnSubir.addEventListener('click', () => modal.style.display = 'block');
+  cerrarModal.addEventListener('click', () => modal.style.display = 'none');
+  cerrarModalEditar.addEventListener('click', () => modalEditar.style.display = 'none');
+
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+    if (e.target === modalEditar) modalEditar.style.display = 'none';
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = form.querySelector('input[type="text"]').value;
+    const precio = parseInt(form.querySelector('input[type="number"]').value);
+    const tipo = form.querySelector('select').value;
+    const imagen = form.querySelector('input[type="file"]').value; // Puedes ajustar si manejas files con FileReader
+
+    const nuevo = {
+      id: Date.now(), // Reemplazar por ID real desde backend si es necesario
+      nombre, precio, tipo, imagen
+    };
+
+    productosEnVenta.push(nuevo);
+    renderProductos(productosEnVenta, contenedorVenta);
+    form.reset();
+    modal.style.display = 'none';
+  });
+});
+
+function mostrarInfoProducto(nombre, descripcion, comprador = null, fecha = null, imagen) {
+  document.getElementById('modalTitulo').textContent = nombre;
+  document.getElementById('modalDescripcion').textContent = descripcion;
+  document.getElementById('modalImagen').src = imagen;
+
+  const extra = comprador && fecha
+    ? `Vendido a: ${comprador} el día ${fecha}`
+    : 'Este producto aún no ha sido vendido.';
+  document.getElementById('modalExtra').textContent = extra;
+
+  document.getElementById('modalInfo').style.display = "block";
 }
 
-// ... el resto de tu código queda igual ...
+document.querySelector('#modalInfo .close').onclick = function () {
+  document.getElementById('modalInfo').style.display = "none";
+};
+
+window.onclick = function (event) {
+  const modal = document.getElementById('modalInfo');
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
