@@ -1,5 +1,8 @@
+import { obtenerUsuario } from './auth.js';
+
 (function manejarSesion() {
-    const usuario = JSON.parse(localStorage.getItem("usuario")); // Debe incluir rol_id
+
+    const usuario = obtenerUsuario(); // en lugar del JSON.parse
     const loginBtn = document.getElementById("loginBtn");
     const profileContainer = document.getElementById("profileContainer");
     const profileIcon = document.getElementById("profileIcon");

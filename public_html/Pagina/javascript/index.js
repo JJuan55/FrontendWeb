@@ -1,3 +1,6 @@
+import { obtenerUsuario } from './auth.js';
+
+
 const contenedor = document.getElementById("product-carousel");
 const filtroForm = document.querySelector(".filtros form");
 const slider = document.getElementById("myRange");
@@ -38,7 +41,8 @@ function renderizarProductos(lista) {
 }
 
 function manejarSesion() {
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+const usuario = obtenerUsuario(); 
+
     if (usuario) {
         console.log("Sesión activa con:", usuario.nombre);
     } else {

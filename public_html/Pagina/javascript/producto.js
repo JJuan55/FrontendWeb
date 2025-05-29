@@ -44,13 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
         cantidad: cantidad
       };
 
-      fetch("/api/carrito/agregar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dto)
-      })
+       fetchConToken("/api/carrito/agregar", {
+         method: "POST",
+         headers: {
+         "Content-Type": "application/json"
+         },
+          body: JSON.stringify(dto)
+         })
+         
         .then(res => {
           if (!res.ok) throw new Error("Error al agregar al carrito");
           return res.text();

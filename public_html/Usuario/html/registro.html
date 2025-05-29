@@ -1,93 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="../css/styleRegistro.css" />
-    <link rel="icon" href="/public_html/Pagina/css/logo.png">
-    <title>Registrarse</title>
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="../css/styleRegistro.css" />
+        <link rel="icon" href="/public_html/Pagina/css/logo.png">
+        <title>Registrarse</title>
+    </head>
 
-<body>
-    <a href="../../Pagina/html/index.html" class="volver-btn">← Volver a la página principal</a>
-    <section class="form-register">
-        <h4>Registro de usuario</h4>
-        <form id="registroForm">
+    <body>
+        <a href="../../Pagina/html/index.html" class="volver-btn">← Volver a la página principal</a>
+        <section class="form-register">
+            <h4>Registro de usuario</h4>
+            <form id="registroForm">
 
-            <input class="controls" type="text" name="nombres" id="nombres" placeholder="Ingrese su(s) Nombre(s)"
-                required />
-            <input class="controls" type="text" name="apellidos" id="apellidos" placeholder="Ingrese su(s) Apellido(s)"
-                required />
-            <input class="controls" type="email" name="correo" id="correo" placeholder="Ingrese su Correo" required />
-            <input class="controls" type="email" name="vercorreo" id="vercorreo" placeholder="Repita su Correo"
-                required />
-            <small id="mensajeCorreo" style="color: red; font-size: 13px; display: block; margin-bottom: 8px;"></small>
+                <input class="controls" type="text" name="nombres" id="nombres" placeholder="Ingrese su(s) Nombre(s)"
+                    required />
+                <input class="controls" type="text" name="apellidos" id="apellidos" placeholder="Ingrese su(s) Apellido(s)"
+                    required />
+                <input class="controls" type="email" name="correo" id="correo" placeholder="Ingrese su Correo" required />
+                <input class="controls" type="email" name="vercorreo" id="vercorreo" placeholder="Repita su Correo"
+                    required />
+                <small id="mensajeCorreo" style="color: red; font-size: 13px; display: block; margin-bottom: 8px;"></small>
 
-            <input class="controls" type="password" name="contrasena" id="contrasena"
-                placeholder="Ingrese su Contraseña" required />
-            <input class="controls" type="password" name="vercontrasena" id="vercontrasena"
-                placeholder="Repita su contraseña" required />
-            <small id="mensajeContrasena"
-                style="color: red; font-size: 13px; display: block; margin-bottom: 8px;"></small>
+                <input class="controls" type="password" name="contrasena" id="contrasena"
+                    placeholder="Ingrese su Contraseña" required />
+                <input class="controls" type="password" name="vercontrasena" id="vercontrasena"
+                    placeholder="Repita su contraseña" required />
+                <small id="mensajeContrasena"
+                    style="color: red; font-size: 13px; display: block; margin-bottom: 8px;"></small>
 
-            <input class="buttons" type="submit" value="Registrar" />
-        </form>
-        <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
-        <div class="terminos-condiciones">
-            <input type="checkbox" id="aceptaTerminos" required>
-            <label for="aceptaTerminos">
-                Acepto los <a href="#" id="abrirModalTerminos">Términos y Condiciones</a>
-            </label>
+                <input class="buttons" type="submit" value="Registrar" />
+            </form>
+            <div id="mensajeError" style="color: red; margin-top: 10px;"></div>
+            <div class="terminos-condiciones">
+                <input type="checkbox" id="aceptaTerminos" required>
+                <label for="aceptaTerminos">
+                    Acepto los <a href="#" id="abrirModalTerminos">Términos y Condiciones</a>
+                </label>
+            </div>
+
+            <p><a href="inicioSesion.html">Ya tengo una cuenta</a></p>
+        </section>
+        <!-- Modal de Verificación -->
+        <div id="modalVerificacion" class="modal" style="display:none;">
+            <div class="modal-contenido">
+                <h3>Verificación de Correo</h3>
+                <p>Se ha enviado un código de verificación a tu correo. Por favor ingrésalo a continuación:</p>
+                <input type="text" id="codigoVerificacion" placeholder="Código de verificación" />
+                <button id="btnVerificarCodigo">Verificar</button>
+                <p id="mensajeVerificacion" style="color: red;"></p>
+            </div>
         </div>
 
-        <p><a href="inicioSesion.html">Ya tengo una cuenta</a></p>
-    </section>
-    <!-- Modal de Verificación -->
-    <div id="modalVerificacion" class="modal" style="display:none;">
-        <div class="modal-contenido">
-            <h3>Verificación de Correo</h3>
-            <p>Se ha enviado un código de verificación a tu correo. Por favor ingrésalo a continuación:</p>
-            <input type="text" id="codigoVerificacion" placeholder="Código de verificación" />
-            <button id="btnVerificarCodigo">Verificar</button>
-            <p id="mensajeVerificacion" style="color: red;"></p>
+        <!-- Modal Términos y Condiciones -->
+        <div id="modalTerminos" class="modal-terminos" style="display: none;">
+            <div class="modal-terminos-contenido">
+                <span class="cerrar-modal-terminos" id="cerrarModalTerminos">&times;</span>
+                <h3>TÉRMINOS Y CONDICIONES DE USO</h3>
+                <p><strong>Última actualización:</strong> 22/05/2025</p>
+                <p><strong>1. Aceptación de los Términos</strong><br>
+                    Al registrarte en Plasticweb, aceptas cumplir con estos Términos y Condiciones, nuestra Política de
+                    Privacidad y las normas de la comunidad</p>
+                <p><strong>2. Definiciones</strong><br>
+                    Usuario: Persona registrada que compra/vende productos reciclados<br>
+                    Productos reciclados: Artículos reutilizados, restaurados o fabricados con materiales reciclados<br>
+                    Plataforma: Sitio web/app donde se realizan las transacciones.</p>
+                <p><strong>3. Registro y Cuenta</strong><br>
+                    Proporcionar información veraz y actualizada.<br>
+                    Es prohibido usar cuentas falsas o de terceros sin consentimiento.<br>
+                    Eres responsable de la seguridad de tu contraseña.</p>
+                <p><strong>4. Normas para Publicaciones</strong><br>
+                    Productos permitidos: Solo artículos reciclados, restaurados o sostenibles.<br>
+                    Prohibido:<br>
+                    Productos ilegales, peligrosos o que infrinjan derechos de terceros.<br>
+                    Engaños en el estado, origen o calidad del producto.<br>
+                    Spam o publicidad no autorizada.<br>
+                    La plataforma puede eliminar publicaciones que incumplan las normas.</p>
+                <p><strong>5. Sanciones y Suspensión</strong><br>
+                    La plataforma puede suspender o eliminar cuentas que incumplan reiteradamente las normas, realicen
+                    fraudes o dañen la comunidad.</p>
+            </div>
         </div>
-    </div>
-
-    <!-- Modal Términos y Condiciones -->
-    <div id="modalTerminos" class="modal-terminos" style="display: none;">
-        <div class="modal-terminos-contenido">
-            <span class="cerrar-modal-terminos" id="cerrarModalTerminos">&times;</span>
-            <h3>TÉRMINOS Y CONDICIONES DE USO</h3>
-            <p><strong>Última actualización:</strong> 22/05/2025</p>
-            <p><strong>1. Aceptación de los Términos</strong><br>
-                Al registrarte en Plasticweb, aceptas cumplir con estos Términos y Condiciones, nuestra Política de
-                Privacidad y las normas de la comunidad</p>
-            <p><strong>2. Definiciones</strong><br>
-                Usuario: Persona registrada que compra/vende productos reciclados<br>
-                Productos reciclados: Artículos reutilizados, restaurados o fabricados con materiales reciclados<br>
-                Plataforma: Sitio web/app donde se realizan las transacciones.</p>
-            <p><strong>3. Registro y Cuenta</strong><br>
-                Proporcionar información veraz y actualizada.<br>
-                Es prohibido usar cuentas falsas o de terceros sin consentimiento.<br>
-                Eres responsable de la seguridad de tu contraseña.</p>
-            <p><strong>4. Normas para Publicaciones</strong><br>
-                Productos permitidos: Solo artículos reciclados, restaurados o sostenibles.<br>
-                Prohibido:<br>
-                Productos ilegales, peligrosos o que infrinjan derechos de terceros.<br>
-                Engaños en el estado, origen o calidad del producto.<br>
-                Spam o publicidad no autorizada.<br>
-                La plataforma puede eliminar publicaciones que incumplan las normas.</p>
-            <p><strong>5. Sanciones y Suspensión</strong><br>
-                La plataforma puede suspender o eliminar cuentas que incumplan reiteradamente las normas, realicen
-                fraudes o dañen la comunidad.</p>
-        </div>
-    </div>
 
 
-    <script src="../javascript/registro.js"></script>
-
-</body>
-
-</html>
+        <script src="../javascript/registro.js"></script>
+    </body>
+    </html>

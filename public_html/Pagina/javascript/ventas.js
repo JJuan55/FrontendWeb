@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // ✅ Restringir acceso solo a vendedores
+  verificarSesion(['vendedor']);
+
   const btnSubir = document.getElementById('btnSubirProducto');
   const modal = document.getElementById('modalProducto');
   const cerrarModal = document.getElementById('cerrarModal');
@@ -54,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnEliminar.addEventListener('click', async (e) => {
           e.stopPropagation();
           if (confirm(`¿Estás seguro de eliminar "${p.nombre}"?`)) {
-            const response = await fetch(`/api/vendedor/productos/${p.id}?idVendedor=${idVendedor}`, {
+            // ✅ Usar fetchConToken
+            const response = await fetchConToken(`/api/vendedor/productos/${p.id}?idVendedor=${idVendedor}`, {
               method: 'DELETE'
             });
             const msg = await response.text();
@@ -106,7 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
       imagen: imagen.value
     };
 
-    const response = await fetch(`/api/vendedor/productos/${productoEditando.id}?idVendedor=${idVendedor}`, {
+    // ✅ Usar fetchConToken
+    const response = await fetchConToken(`/api/vendedor/productos/${productoEditando.id}?idVendedor=${idVendedor}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(productoActualizado)
@@ -135,20 +140,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === modalEditar) modalEditar.style.display = 'none';
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const nombre = form.querySelector('input[type="text"]').value;
     const precio = parseInt(form.querySelector('input[type="number"]').value);
     const tipo = form.querySelector('select').value;
-    const imagen = form.querySelector('input[type="file"]').value; // Puedes ajustar si manejas files con FileReader
+    const imagen = form.querySelector('input[type="file"]').value;
 
     const nuevo = {
-      id: Date.now(), // Reemplazar por ID real desde backend si es necesario
       nombre, precio, tipo, imagen
     };
 
-    productosEnVenta.push(nuevo);
-    renderProductos(productosEnVenta, contenedorVenta);
+    // ✅ Subida de producto usando backend
+    const response = await fetchConToken("/api/vendedor/productos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevo)
+    });
+
+    const msg = await response.text();
+    alert(msg);
+
+    if (response.ok) {
+      // Opcional: recargar lista desde backend
+      nuevo.id = Date.now(); // temporal, hasta que lo obtengas del backend
+      productosEnVenta.push(nuevo);
+      renderProductos(productosEnVenta, contenedorVenta);
+    }
+
     form.reset();
     modal.style.display = 'none';
   });

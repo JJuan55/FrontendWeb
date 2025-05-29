@@ -78,17 +78,22 @@
             </form>
         </div>
     </div>
+
     <div id="mensaje-acceso" class="mensaje-sesion">
         Acceso denegado. Solo los vendedores pueden acceder.
     </div>
 
+    <!-- Scripts -->
+    <script src="../javascript/auth.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const usuario = JSON.parse(localStorage.getItem("usuario"));
-            if (!usuario || usuario.rol_id !== 2 ) {
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const usuario = await auth.verificarRol("vendedor");
+                // Si no lanza error, ocultamos el mensaje
+                document.getElementById("mensaje-acceso").style.display = "none";
+            } catch (error) {
                 const mensaje = document.getElementById("mensaje-acceso");
                 mensaje.classList.add("mostrar");
-
                 setTimeout(() => {
                     mensaje.classList.remove("mostrar");
                     window.location.href = "index.html";
@@ -110,6 +115,7 @@
             .then(data => {
                 document.getElementById("footer-container").innerHTML = data;
             });
+
         fetch("icono.html")
             .then(res => res.text())
             .then(data => {

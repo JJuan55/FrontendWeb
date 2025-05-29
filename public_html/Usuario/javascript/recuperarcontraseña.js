@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const correo = document.getElementById('correo').value;
 
         try {
-            const response = await fetch('http://localhost:8080/api/recuperar/enviar-codigo', {
+            const response = await fetch('http://localhost:8081/api/recuperar/enviar-codigo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

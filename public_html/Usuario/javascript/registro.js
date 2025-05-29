@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nombre: nombres,
       apellido: apellidos,
       contrasena: contrasena,
+      confirmarContrasena: verContrasena, 
       correo: correo
     };
 
@@ -103,7 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then((res) => res.json())
     .then((data) => {
-      if (data.codigoEnviado) {
+                console.log("Respuesta del backend:", data);
+ 
+      if (data.exito) {
+
         mensajeError.style.color = "green";
         mensajeError.textContent = "Registro iniciado correctamente. Revisa tu correo.";
         document.getElementById("modalVerificacion").style.display = "flex";
@@ -179,5 +183,5 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       alert("Debes aceptar los Términos y Condiciones para registrarte.");
     }
-  });
-});
+
+

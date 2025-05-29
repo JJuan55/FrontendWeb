@@ -1,4 +1,6 @@
+import { guardarSesion, redireccionarPorRol } from '../../Pagina/javascript/auth.js';
 document.addEventListener('DOMContentLoaded', () => {
+
     const form = document.getElementById('loginForm');
 
     // Manejador de envío del formulario
@@ -12,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const correo = document.getElementById('correo').value;
         const contrasena = document.getElementById('contrasena').value;
-
+                
+        
         // Enviar datos al backend
         fetch("http://localhost:8081/api/login", {
             method: "POST",
@@ -22,18 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ correo, contrasena })
         })
             .then(response => {
-                if (!response.ok) {
+                   if (!response.ok) {
                     throw new Error("Error en la respuesta del servidor.");
                 }
                 return response.json();
             })
             .then(data => {
                 if (data.token) {
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("correoUsuario", correo); // Guarda el correo por si se requiere
-                    alert(data.mensaje || "Inicio de sesión exitoso");
-                    window.location.href = "../../Pagina/html/index.html";
-                } else {
+                 guardarSesion({
+                   token: data.token,
+                   rol: data.rol || null,
+                                  // Agrega más si el backend devuelve: clienteId, vendedorId, etc.
+                });
+
+                alert(data.mensaje || "Inicio de sesión exitoso");
+                redireccionarPorRol(); // Usa directamente el auth.js para ir al módulo correcto
+             }
+
+                else {
                     alert(data.mensaje || "Credenciales incorrectas");
                 }
             })
@@ -70,28 +79,31 @@ function signIn() {
                 },
                 body: JSON.stringify({ correo: email })
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error en el inicio de sesión con Google.");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.token) {
-                        localStorage.setItem("token", data.token);
-                        localStorage.setItem("correoUsuario", email);
-                        alert(data.mensaje || "Inicio de sesión exitoso con Google");
-                        window.location.href = "../../Pagina/html/index.html";
-                    } else {
-                        alert(data.mensaje || "No se pudo iniciar sesión con Google.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al iniciar sesión con Google:', error);
-                    alert("Hubo un problema al iniciar sesión con Google.");
-                });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error en el inicio de sesión con Google.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.token) {
+                    // Guardamos la sesión usando la misma función
+                    guardarSesion({
+                        token: data.token,
+                        rol: data.rol || null  // Si el backend no envía rol, se pone null
+                    });
+                    alert(data.mensaje || "Inicio de sesión exitoso con Google");
+                    redireccionarPorRol();
+                } else {
+                    alert(data.mensaje || "No se pudo iniciar sesión con Google.");
+                }
+            })
+            .catch(error => {
+                console.error('Error al iniciar sesión con Google:', error);
+                alert("Hubo un problema al iniciar sesión con Google.");
+            });
         })
         .catch(function (error) {
             console.error('Error al iniciar sesión con Google:', error);
         });
-}
+}   
