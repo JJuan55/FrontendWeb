@@ -40,94 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === INICIO DE SESIÓN NORMAL ===
+    // === INICIO DE SESIÓN ===
     if (loginForm) {
-        loginForm.addEventListener('submit', function (e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-
-            if (!loginForm.checkValidity()) {
-                alert('Por favor completa todos los campos requeridos con un formato válido.');
-                return;
-            }
 
             const correo = document.getElementById('correo').value;
             const contrasena = document.getElementById('contrasena').value;
 
-            fetch(`${API_BASE_URL}/api/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ correo, contrasena })
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error("Error en la respuesta del servidor.");
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.token) {
-                        guardarSesion({
-                            token: data.token,
-                            rol: data.rol || null
-                        });
-                        alert(data.mensaje || "Inicio de sesión exitoso");
-                        redireccionarPorRol();
-                    } else {
-                        alert(data.mensaje || "Credenciales incorrectas");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error en la solicitud:", error);
-                    alert("Correo o contraseña incorrectos, o el servidor no respondió.");
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ correo, contrasena })
                 });
-        });
 
-        // === INICIO DE SESIÓN CON GOOGLE ===
-        gapi.load('auth2', function () {
-            gapi.auth2.init({
-                client_id: 'TU_CLIENT_ID.apps.googleusercontent.com',
-                scope: 'profile email'
-            });
+                const data = await response.json();
+
+                if (response.ok) {
+                    guardarSesion(data); // Guarda token y usuario
+                    redireccionarPorRol(data); // Redirige según rol
+                } else {
+                    alert(data.mensaje || "Credenciales incorrectas.");
+                }
+            } catch (error) {
+                console.error('Error en el inicio de sesión:', error);
+                alert('Hubo un error al iniciar sesión. Inténtalo más tarde.');
+            }
         });
     }
 });
-
-// === FUNCIÓN GLOBAL PARA LOGIN CON GOOGLE ===
-window.signIn = function () {
-    const auth2 = gapi.auth2.getAuthInstance();
-    auth2.signIn()
-        .then(function (googleUser) {
-            const profile = googleUser.getBasicProfile();
-            const email = profile.getEmail();
-
-            document.getElementById('google-login-result').innerHTML =
-                `<p>Bienvenido, ${profile.getName()} (${email})</p>`;
-
-            fetch(`${API_BASE_URL}/api/login/google`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ correo: email })
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error("Error en el inicio de sesión con Google.");
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.token) {
-                        guardarSesion({
-                            token: data.token,
-                            rol: data.rol || null
-                        });
-                        alert(data.mensaje || "Inicio de sesión exitoso con Google");
-                        redireccionarPorRol();
-                    } else {
-                        alert(data.mensaje || "No se pudo iniciar sesión con Google.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al iniciar sesión con Google:', error);
-                    alert("Hubo un problema al iniciar sesión con Google.");
-                });
-        })
-        .catch(function (error) {
-            console.error('Error al iniciar sesión con Google:', error);
-        });
-};
