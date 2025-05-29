@@ -1,170 +1,98 @@
-import { protegerRuta, obtenerUsuario, fetchConToken } from './auth.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-  protegerRuta(); // Solo requiere sesión iniciada (cliente)
+import { API_BASE_URL } from './config.js';
 
-  const contenedor = document.getElementById("items-carrito");
-  const resumen = document.getElementById("resumen-detalle");
-  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+const SESION_KEY = 'sesion';
 
-  function actualizarCarrito() {
-    contenedor.innerHTML = "";
-    let total = 0;
+// Guardar sesión completa (token + datos usuario)
+export function guardarSesion(sesion) {
+  localStorage.setItem(SESION_KEY, JSON.stringify(sesion));
+}
 
-    if (carrito.length === 0) {
-      contenedor.innerHTML = "<p>Tu carrito está vacío.</p>";
-      document.getElementById("total-compra").textContent = "0";
-      return;
-    }
+// Obtener toda la sesión
+export function obtenerSesion() {
+  return JSON.parse(localStorage.getItem(SESION_KEY));
+}
 
-    carrito.forEach((item, index) => {
-      const subtotal = item.precio * item.cantidad;
-      total += subtotal;
+// Obtener token JWT
+export function obtenerToken() {
+  return obtenerSesion()?.token || null;
+}
 
-      const div = document.createElement("div");
-      div.classList.add("item-carrito");
-      div.innerHTML = `
-        <img src="${item.imagen}" alt="${item.nombre}" class="producto-imagen" />
-        <div class="item-info">
-          <h4>${item.nombre}</h4>
-          <p>${item.descripcion}</p>
-          <p>Vendedor: ${item.vendedor}</p>
-          <p>Cantidad: <span class="cantidad">${item.cantidad}</span></p>
-        </div>
-        <div class="item-precio">$${subtotal.toLocaleString()} COP</div>
-        <button class="eliminar-btn" data-index="${index}">Eliminar</button>
-      `;
-      contenedor.appendChild(div);
-    });
+// Obtener rol del usuario autenticado
+export function obtenerRol() {
+  return obtenerSesion()?.rol || null;
+}
 
-    document.getElementById("total-compra").textContent = total.toLocaleString();
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+// Obtener IDs
+export function obtenerIdCliente() {
+  return obtenerSesion()?.clienteId || null;
+}
 
-    document.querySelectorAll(".eliminar-btn").forEach(btn => {
-      btn.addEventListener("click", eliminarItem);
-    });
+export function obtenerIdVendedor() {
+  return obtenerSesion()?.vendedorId || null;
+}
+
+// Verifica si hay una sesión activa
+export function estaAutenticado() {
+  return !!obtenerSesion();
+}
+
+// Cerrar sesión
+export function cerrarSesion() {
+  localStorage.removeItem(SESION_KEY);
+  window.location.href = '/login.html';
+}
+
+// Redirigir según el rol
+export function redireccionarPorRol() {
+  const rol = obtenerRol();
+
+  if (rol === 'CLIENTE') {
+    window.location.href = '/Usuario/html/inicio.html';
+  } else if (rol === 'VENDEDOR') {
+    window.location.href = '/Pagina/html/inicio.html';
+  } else if (rol === 'ADMIN') {
+    window.location.href = '/Pagina/html/admin.html';
+  } else {
+    alert("Tu sesión ha expirado o es inválida.");
+    cerrarSesion();
+  }
+}
+
+// Proteger una ruta específica por rol
+export function protegerRuta(rolEsperado) {
+  if (!estaAutenticado() || obtenerRol() !== rolEsperado) {
+    redireccionarPorRol();
+  }
+}
+
+// Proteger para varios roles permitidos
+export function protegerMultiplesRoles(rolesPermitidos) {
+  if (!estaAutenticado() || !rolesPermitidos.includes(obtenerRol())) {
+    redireccionarPorRol();
+  }
+}
+
+// fetch con token incluido
+export async function fetchConToken(path, opciones = {}) {
+  const token = obtenerToken();
+
+  if (!token) {
+    cerrarSesion();
+    throw new Error("Sesión inválida.");
   }
 
-  function eliminarItem(event) {
-    const index = event.target.getAttribute("data-index");
-    carrito.splice(index, 1);
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    actualizarCarrito();
-  }
+  const headers = opciones.headers || {};
+  headers['Authorization'] = `Bearer ${token}`;
+  headers['Content-Type'] = 'application/json';
 
-  async function finalizarCompra() {
-    if (carrito.length === 0) {
-      alert("Tu carrito está vacío.");
-      return;
-    }
+  const url = API_BASE_URL + path;
 
-    const usuario = obtenerUsuario();
-    if (!usuario || !usuario.id) {
-      alert("Debes estar registrado para realizar una compra.");
-      return;
-    }
-
-    const peticionCompra = {
-      usuarioId: usuario.id,
-      productos: carrito.map(item => ({
-        productoId: item.id,
-        cantidad: item.cantidad
-      }))
-    };
-
-    try {
-      const respuesta = await fetchConToken("/api/compras/realizar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(peticionCompra)
-      });
-
-      const data = await respuesta.json();
-
-      if (respuesta.ok && data.exito) {
-        generarFacturaPDF();
-        alert("Compra finalizada con éxito. ¡Gracias!");
-        carrito = [];
-        localStorage.setItem("carrito", JSON.stringify(carrito));
-        actualizarCarrito();
-      } else {
-        alert(`Error al realizar la compra: ${data.mensaje || "Intenta más tarde"}`);
-      }
-    } catch (error) {
-      console.error("Error en la compra:", error);
-      alert("No se pudo realizar la compra. Intenta más tarde.");
-    }
-  }
-
-  function vaciarCarrito() {
-    if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
-      carrito = [];
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-      actualizarCarrito();
-    }
-  }
-
-  function generarFacturaPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const fecha = new Date().toLocaleString();
-    let y = 20;
-
-    doc.setFontSize(16);
-    doc.text("Factura de Compra", 105, y, { align: "center" });
-    y += 10;
-    doc.setFontSize(10);
-    doc.text(`Fecha: ${fecha}`, 105, y, { align: "center" });
-
-    y += 15;
-    doc.setFontSize(12);
-    doc.text("Detalle de la compra:", 14, y);
-    y += 10;
-
-    doc.setFontSize(10);
-    doc.text("Producto", 14, y);
-    doc.text("Cant.", 80, y);
-    doc.text("Precio", 110, y);
-    doc.text("Subtotal", 160, y);
-
-    let total = 0;
-    y += 6;
-
-    carrito.forEach(item => {
-      const subtotal = item.precio * item.cantidad;
-      total += subtotal;
-
-      doc.text(item.nombre, 14, y);
-      doc.text(`${item.cantidad}`, 85, y);
-      doc.text(`$${item.precio.toLocaleString()}`, 110, y);
-      doc.text(`$${subtotal.toLocaleString()}`, 160, y);
-      y += 6;
-
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
-      }
-    });
-
-    y += 10;
-    doc.setFontSize(12);
-    doc.text(`Total: $${total.toLocaleString()} COP`, 160, y);
-    y += 20;
-    doc.setFontSize(10);
-    doc.text("¡Gracias por tu compra!", 105, y, { align: "center" });
-
-    doc.save("factura_compra.pdf");
-  }
-
-  // Eventos
-  document.getElementById("finalizarCompraBtn").addEventListener("click", finalizarCompra);
-  document.getElementById("vaciarCarritoBtn").addEventListener("click", vaciarCarrito);
-
-  actualizarCarrito();
-});
-
+  return fetch(url, {
+    ...opciones,
+    headers
+  });
+}
 
 
 

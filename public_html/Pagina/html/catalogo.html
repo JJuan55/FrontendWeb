@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Catálogo de Productos</title>
     <link rel="stylesheet" href="../css/styleCatalogo.css" />
-    <link rel="stylesheet" href="../css/styleHeader.css">
-    <link rel="stylesheet" href="../css/styleFooter.css">
+    <link rel="stylesheet" href="../css/styleHeader.css" />
+    <link rel="stylesheet" href="../css/styleFooter.css" />
 </head>
 
 <body>
@@ -59,9 +59,12 @@
             <!-- Productos renderizados por JS -->
         </section>
     </main>
+
     <div id="paginacion" class="paginacion"></div>
     <div id="footer-container"></div>
 
+    <script src="../javascript/config.js"></script>
+    <script src="../javascript/auth.js"></script>
     <script src="../javascript/catalogo.js"></script>
 
     <script>
@@ -76,6 +79,7 @@
             .then(data => {
                 document.getElementById("footer-container").innerHTML = data;
             });
+
         fetch("icono.html")
             .then(res => res.text())
             .then(data => {

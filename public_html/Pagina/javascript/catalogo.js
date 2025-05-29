@@ -83,9 +83,6 @@ function obtenerProductosDelBackend() {
   const tipos = formData.getAll("tipo");
   tipos.filter(t => t && t.trim() !== "").forEach(t => params.append("tipo", t.trim()));
 
-  const materiales = formData.getAll("material");
-  materiales.filter(m => m && m.trim() !== "").forEach(m => params.append("material", m.trim()));
-
   const precioMin = formData.get("precioMin");
   if (precioMin && precioMin.trim() !== "") params.append("precioMin", precioMin.trim());
 
@@ -100,7 +97,7 @@ function obtenerProductosDelBackend() {
 
   console.log("Query params:", params.toString()); // Para depuración
 
-  fetch(`http://localhost:8081/api/productos/todo?${params.toString()}`)
+  fetch(`${API_BASE_URL}/api/productos/todo?${params.toString()}`)
     .then(res => res.json())
     .then(data => {
       console.log("Respuesta del backend:", data);
@@ -110,3 +107,4 @@ function obtenerProductosDelBackend() {
       console.error("Error al obtener productos:", err);
     });
 }
+

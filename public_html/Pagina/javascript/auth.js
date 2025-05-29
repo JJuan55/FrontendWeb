@@ -1,4 +1,6 @@
 
+import { API_BASE_URL } from './config.js';
+
 const SESION_KEY = 'sesion';
 
 // Guardar sesión completa (token + datos usuario)
@@ -46,11 +48,11 @@ export function redireccionarPorRol() {
   const rol = obtenerRol();
 
   if (rol === 'CLIENTE') {
-    window.location.href = '/cliente/inicio.html';
+    window.location.href = '/Usuario/html/inicio.html';
   } else if (rol === 'VENDEDOR') {
-    window.location.href = '/vendedor/inicio.html';
+    window.location.href = '/Pagina/html/inicio.html';
   } else if (rol === 'ADMIN') {
-    window.location.href = '/admin/panel.html';
+    window.location.href = '/Pagina/html/admin.html';
   } else {
     alert("Tu sesión ha expirado o es inválida.");
     cerrarSesion();
@@ -72,7 +74,7 @@ export function protegerMultiplesRoles(rolesPermitidos) {
 }
 
 // fetch con token incluido
-export async function fetchConToken(url, opciones = {}) {
+export async function fetchConToken(path, opciones = {}) {
   const token = obtenerToken();
 
   if (!token) {
@@ -83,6 +85,8 @@ export async function fetchConToken(url, opciones = {}) {
   const headers = opciones.headers || {};
   headers['Authorization'] = `Bearer ${token}`;
   headers['Content-Type'] = 'application/json';
+
+  const url = API_BASE_URL + path;
 
   return fetch(url, {
     ...opciones,

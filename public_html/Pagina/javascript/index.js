@@ -1,5 +1,5 @@
 import { obtenerUsuario } from './auth.js';
-
+import { API_BASE_URL } from './config.js';
 
 const contenedor = document.getElementById("product-carousel");
 const filtroForm = document.querySelector(".filtros form");
@@ -41,8 +41,7 @@ function renderizarProductos(lista) {
 }
 
 function manejarSesion() {
-const usuario = obtenerUsuario(); 
-
+    const usuario = obtenerUsuario();
     if (usuario) {
         console.log("Sesión activa con:", usuario.nombre);
     } else {
@@ -60,7 +59,7 @@ function construirURLConFiltros() {
     params.append("precioMax", precioMax);
     if (soloDisponibles) params.append("disponible", true);
 
-    return `/api/productos?${params.toString()}`;
+    return `${API_BASE_URL}/api/productos?${params.toString()}`;
 }
 
 // Función para obtener productos desde el backend usando los filtros
@@ -95,10 +94,10 @@ function renderizarUltimosVistos() {
         const card = document.createElement("div");
         card.classList.add("producto");
         card.innerHTML = `
-        <img src="${prod.imagen}" alt="${prod.nombre}" />
-        <h4>${prod.nombre}</h4>
-        <p>$${prod.precio.toLocaleString()} COP</p>
-      `;
+            <img src="${prod.imagen}" alt="${prod.nombre}" />
+            <h4>${prod.nombre}</h4>
+            <p>$${prod.precio.toLocaleString()} COP</p>
+        `;
         card.addEventListener("click", () => {
             localStorage.setItem("productoSeleccionado", JSON.stringify(prod));
             window.location.href = "producto.html";

@@ -6,12 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Guardar en últimos vistos
   let vistos = JSON.parse(localStorage.getItem("ultimosVistos")) || [];
   vistos = vistos.filter(p => p.nombre !== producto.nombre);
   vistos.unshift(producto);
   if (vistos.length > 5) vistos = vistos.slice(0, 5);
   localStorage.setItem("ultimosVistos", JSON.stringify(vistos));
 
+  // Mostrar información del producto
   document.querySelector(".imagenes-producto img").src = producto.imagen;
   document.querySelector(".imagenes-producto img").alt = producto.nombre;
   document.querySelector(".detalles h2").textContent = producto.nombre;
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#producto-disponibilidad").textContent = producto.disponible ? "Disponible" : "No disponible";
 
   const btnAgregar = document.querySelector(".btn-carrito");
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const usuario = usuarioActivo(); // 👈 Centralizado desde auth.js
 
   if (!producto.disponible) {
     btnAgregar.disabled = true;
@@ -39,25 +41,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const cantidad = parseInt(document.querySelector("#cantidad").value);
     if (cantidad > 0) {
       const dto = {
-        idUsuario: usuario.id,  // Asegúrate de que el objeto 'usuario' tenga un campo 'id'
-        idProducto: producto.id, // Asegúrate de que el objeto 'producto' tenga un campo 'id'
+        idUsuario: usuario.id,
+        idProducto: producto.id,
         cantidad: cantidad
       };
 
-       fetchConToken("/api/carrito/agregar", {
-         method: "POST",
-         headers: {
-         "Content-Type": "application/json"
-         },
-          body: JSON.stringify(dto)
-         })
-         
+      fetchConToken("/api/carrito/agregar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dto)
+      })
         .then(res => {
           if (!res.ok) throw new Error("Error al agregar al carrito");
           return res.text();
         })
         .then(msg => {
-          alert(msg);  // Muestra la respuesta del servidor
+          alert(msg);
         })
         .catch(err => {
           alert("Hubo un error al agregar el producto al carrito: " + err.message);
@@ -74,5 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 });
+
 
 

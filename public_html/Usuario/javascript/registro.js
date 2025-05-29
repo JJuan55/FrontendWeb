@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensajeCorreo = document.getElementById("mensajeCorreo");
   const mensajeContrasena = document.getElementById("mensajeContrasena");
 
-  // Regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
@@ -88,36 +87,33 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Enviar los datos al backend
     const datosRegistro = {
       nombre: nombres,
       apellido: apellidos,
       contrasena: contrasena,
-      confirmarContrasena: verContrasena, 
+      confirmarContrasena: verContrasena,
       correo: correo
     };
 
-    fetch("http://localhost:8081/api/registro/iniciar", {
+    fetch(`${API_BASE_URL}/api/registro/iniciar`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(datosRegistro),
     })
-    .then((res) => res.json())
-    .then((data) => {
-                console.log("Respuesta del backend:", data);
- 
-      if (data.exito) {
-
-        mensajeError.style.color = "green";
-        mensajeError.textContent = "Registro iniciado correctamente. Revisa tu correo.";
-        document.getElementById("modalVerificacion").style.display = "flex";
-      } else {
-        mensajeError.textContent = data.mensaje || "No se pudo iniciar el registro.";
-      }
-    })
-    .catch((error) => {
-      mensajeError.textContent = "Error al registrar: " + error.message;
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Respuesta del backend:", data);
+        if (data.exito) {
+          mensajeError.style.color = "green";
+          mensajeError.textContent = "Registro iniciado correctamente. Revisa tu correo.";
+          document.getElementById("modalVerificacion").style.display = "flex";
+        } else {
+          mensajeError.textContent = data.mensaje || "No se pudo iniciar el registro.";
+        }
+      })
+      .catch((error) => {
+        mensajeError.textContent = "Error al registrar: " + error.message;
+      });
   });
 
   // Verificación de código
@@ -133,55 +129,31 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      fetch("http://localhost:8081/api/registro/verificar", {
+      fetch(`${API_BASE_URL}/api/registro/verificar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ correo, codigo })
       })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.verificado) {
-          mensajeVerificacion.style.color = "green";
-          mensajeVerificacion.textContent = "¡Cuenta verificada correctamente!";
-          setTimeout(() => {
-            document.getElementById("modalVerificacion").style.display = "none";
-            window.location.href = "inicioSesion.html";
-          }, 2000);
-        } else {
-          mensajeVerificacion.style.color = "red";
-          mensajeVerificacion.textContent = "Código incorrecto. Inténtalo de nuevo.";
-        }
-      })
-      .catch((error) => {
-        mensajeVerificacion.textContent = "Error al verificar: " + error.message;
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.verificado) {
+            mensajeVerificacion.style.color = "green";
+            mensajeVerificacion.textContent = "¡Cuenta verificada correctamente!";
+            setTimeout(() => {
+              document.getElementById("modalVerificacion").style.display = "none";
+              window.location.href = "inicioSesion.html";
+            }, 2000);
+          } else {
+            mensajeVerificacion.style.color = "red";
+            mensajeVerificacion.textContent = "Código incorrecto. Inténtalo de nuevo.";
+          }
+        })
+        .catch((error) => {
+          mensajeVerificacion.textContent = "Error al verificar: " + error.message;
+        });
     });
   }
-
-  // Modal de Términos y Condiciones
-  const abrirModal = document.getElementById("abrirModalTerminos");
-  const modal = document.getElementById("modalTerminos");
-  const cerrarModal = document.getElementById("cerrarModalTerminos");
-
-  abrirModal?.addEventListener("click", (e) => {
-    e.preventDefault();
-    modal.style.display = "flex";
-  });
-
-  cerrarModal?.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
-    }
-  });
 });
 
-    if (!acepta.checked) {
-      e.preventDefault();
-      alert("Debes aceptar los Términos y Condiciones para registrarte.");
-    }
 
 

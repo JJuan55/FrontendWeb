@@ -10,12 +10,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   let vendedores = [];
   let productos = [];
 
+  // Variables para buscar y filtrar
+  let filtroCompradores = '';
+  let filtroVendedores = '';
+  let filtroProductos = '';
+
   async function obtenerDatos() {
     const [clientesRes, vendedoresRes, productosRes] = await Promise.all([
-      fetchConToken('/api/admin/clientes'),
-      fetchConToken('/api/admin/vendedores'),
-      fetchConToken('/api/admin/productos')
+      fetchConToken(`${API_BASE_URL}/api/admin/clientes`),
+      fetchConToken(`${API_BASE_URL}/api/admin/vendedores`),
+      fetchConToken(`${API_BASE_URL}/api/admin/productos`)
     ]);
+
     compradores = await clientesRes.json();
     vendedores = await vendedoresRes.json();
     productos = await productosRes.json();
@@ -25,25 +31,44 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function inicializarTablas() {
+    // Agregar buscadores
+    document.getElementById('buscadorCompradores').addEventListener('input', (e) => {
+      filtroCompradores = e.target.value.toLowerCase();
+      mostrarPagina('tablaCompradores', filtrarDatos(compradores, filtroCompradores, true), 1, true);
+      agregarPaginacion('tablaCompradores', filtrarDatos(compradores, filtroCompradores, true), true);
+    });
+
+    document.getElementById('buscadorVendedores').addEventListener('input', (e) => {
+      filtroVendedores = e.target.value.toLowerCase();
+      mostrarPagina('tablaVendedores', filtrarDatos(vendedores, filtroVendedores, true), 1, true);
+      agregarPaginacion('tablaVendedores', filtrarDatos(vendedores, filtroVendedores, true), true);
+    });
+
+    document.getElementById('buscadorProductos').addEventListener('input', (e) => {
+      filtroProductos = e.target.value.toLowerCase();
+      mostrarPagina('tablaProductos', filtrarDatos(productos, filtroProductos, false), 1, false);
+      agregarPaginacion('tablaProductos', filtrarDatos(productos, filtroProductos, false), false);
+    });
+
+    // Mostrar primeras páginas sin filtro
     mostrarPagina('tablaCompradores', compradores, 1, true);
     agregarPaginacion('tablaCompradores', compradores, true);
-    crearBuscador('tablaCompradores', compradores, true);
 
     mostrarPagina('tablaVendedores', vendedores, 1, true);
     agregarPaginacion('tablaVendedores', vendedores, true);
-    crearBuscador('tablaVendedores', vendedores, true);
 
     mostrarPagina('tablaProductos', productos, 1, false);
     agregarPaginacion('tablaProductos', productos, false);
-    crearBuscador('tablaProductos', productos, false);
   }
 
-  function crearBuscador(idTabla, datos, esUsuario) {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'Buscar...';
-    input.className = 'buscador';
-    // Puedes completar aquí el código de filtrado si lo estás usando
+  // Función para filtrar datos según búsqueda
+  function filtrarDatos(datos, filtro, esUsuario) {
+    if (!filtro) return datos;
+    return datos.filter(d => {
+      const nombre = (d.nombre || d.producto).toLowerCase();
+      const emailOVendedor = (d.email || d.vendedor).toLowerCase();
+      return nombre.includes(filtro) || emailOVendedor.includes(filtro);
+    });
   }
 
   function mostrarPagina(idTabla, datos, pagina, esUsuario) {
@@ -109,10 +134,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Funciones globales
+  // Funciones globales para botones, expuestas en window para acceso desde HTML
   window.eliminarProducto = async function (productoId) {
     if (confirm('¿Seguro que deseas eliminar este producto?')) {
-      const res = await fetchConToken(`/api/admin/productos/${productoId}`, {
+      const res = await fetchConToken(`${API_BASE_URL}/api/admin/productos/${productoId}`, {
         method: 'DELETE'
       });
       alert(await res.text());
@@ -121,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   window.cambiarEstadoUsuario = async function (usuarioId) {
-    const res = await fetchConToken(`/api/admin/usuarios/${usuarioId}/estado?estado=suspendido`, {
+    const res = await fetchConToken(`${API_BASE_URL}/api/admin/usuarios/${usuarioId}/estado?estado=suspendido`, {
       method: 'PUT'
     });
     alert(await res.text());
@@ -129,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   window.asignarModerador = async function (usuarioId) {
-    const res = await fetchConToken(`/api/admin/usuarios/${usuarioId}/rol?rol=moderador`, {
+    const res = await fetchConToken(`${API_BASE_URL}/api/admin/usuarios/${usuarioId}/rol?rol=moderador`, {
       method: 'PUT'
     });
     alert(await res.text());
