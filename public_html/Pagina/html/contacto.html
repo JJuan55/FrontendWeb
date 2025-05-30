@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contáctanos</title>
+    <link rel="stylesheet" href="../css/styleContacto.css">
+    <link rel="stylesheet" href="../css/styleHeader.css">
+    <link rel="stylesheet" href="../css/styleFooter.css">
+</head>
+
+<body>
+    <div id="header-container"></div>
+    <main class="contacto-container">
+        <h1>Contáctanos</h1>
+
+        <div class="contacto-content">
+            <!-- Formulario -->
+            <div class="formulario-contacto">
+                <form id="contactForm">
+                    <label for="fname">Nombre y apellido</label>
+                    <input type="text" id="name" name="nombrecom" placeholder="Tu nombre y apellido..." required>
+
+                    <label for="localidad">Localidad</label>
+                    <input type="text" id="localidad" name="localidad" placeholder="Su localidad..." required>
+
+                    <label for="subject">Mensaje</label>
+                    <textarea id="subject" name="subject" placeholder="Escribe tu mensaje..." style="height:200px"
+                        required></textarea>
+
+                    <button type="submit" class="submit-btn">Enviar Mensaje</button>
+                </form>
+            </div>
+
+            <!-- Información de la empresa -->
+            <div class="info-contacto">
+                <h2>Información de la Empresa</h2>
+                <p><strong>Teléfono:</strong> +57 302 431 9702</p>
+                <p><strong>Email:</strong> andreygutierrez5705@gmail.com</p>
+                <p><strong>Horario de atención:</strong> Todos los dias de 5:00 a.m. a 5:00 p.m.</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="../javascript/contacto.js"></script>
+
+
+    <script>
+        fetch("./header.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("header-container").innerHTML = data;
+            })
+            .then(() => {
+                const script = document.createElement("script");
+                script.src = "../javascript/header.js";
+                document.body.appendChild(script);
+            });
+        fetch("footer.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("footer-container").innerHTML = data;
+            });
+        fetch("icono.html")
+            .then(res => res.text())
+            .then(data => {
+                document.head.insertAdjacentHTML("beforeend", data);
+            });
+    </script>
+
+</body>
+
+</html>
