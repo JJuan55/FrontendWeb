@@ -8,6 +8,13 @@
   <link rel="stylesheet" href="../css/styleCarrito.css" />
   <link rel="stylesheet" href="../css/styleHeader.css" />
   <link rel="stylesheet" href="../css/styleFooter.css" />
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // Asegura que jsPDF esté disponible globalmente
+    window.jsPDF = window.jspdf.jsPDF;
+  </script>
 </head>
 
 <body>
@@ -35,10 +42,13 @@
 
   <div id="footer-container"></div>
 
+  <!-- Configuraciones globales del frontend -->
   <script src="../javascript/config.js" type="module"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="../javascript/carrito.js" type="module"></script>
 
+  <!-- Lógica del carrito con PDF -->
+  <script src="../javascript/carrito.js"></script>
+
+  <!-- Cargar header/footer/icono dinámicamente -->
   <script>
     fetch("header.html")
       .then(res => res.text())
