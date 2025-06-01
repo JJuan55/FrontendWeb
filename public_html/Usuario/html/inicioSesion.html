@@ -7,7 +7,6 @@
     <title>Inicio de sesión</title>
     <link rel="stylesheet" href="../css/styleInicioSesion.css">
     <link rel="icon" href="../css/logo.png">
-    <meta name="google-signin-client_id" content="TU_CLIENT_ID.apps.googleusercontent.com"> <!-- Reemplaza TU_CLIENT_ID -->
 </head>
 
 <body>
@@ -18,16 +17,12 @@
             <input class="controls" type="email" name="correo" id="correo" placeholder="Tu Correo" required>
             <input class="controls" type="password" name="contrasena" id="contrasena" placeholder="Tu Contraseña" required>
             <input class="buttons" type="submit" value="Ingresar">
-            <button class="social-button google" type="button" onclick="signIn()">Iniciar sesión con Google</button>
-            <div id="google-login-result"></div>
         </form>
         <p><a href="recuperarContraseña.html">¿Olvidaste tu Contraseña?</a></p>
         <p><a href="registro.html">No estoy registrado</a></p>
     </section>
 
-    <script src="../javascript/config.js"></script>
-    <script type="module" src="../javascript/inicioSesion.js"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="../javascript/inicioSesion.js"></script>
 </body>
 
 </html>
