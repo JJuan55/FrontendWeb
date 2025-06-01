@@ -30,6 +30,7 @@ import { obtenerUsuario } from './auth.js';
         if (logoutBtn) {
             logoutBtn.addEventListener("click", () => {
                 localStorage.removeItem("usuario");
+                localStorage.removeItem("token");
                 window.location.href = "../../Usuario/html/inicioSesion.html";
             });
         }
