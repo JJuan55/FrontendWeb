@@ -2,19 +2,12 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito de Compras</title>
-  <link rel="stylesheet" href="../css/stylecarrito.css" />
-  <link rel="stylesheet" href="../css/styleHeader.css" />
-  <link rel="stylesheet" href="../css/styleFooter.css" />
-
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    // Asegura que jsPDF esté disponible globalmente
-    window.jsPDF = window.jspdf.jsPDF;
-  </script>
+  <link rel="stylesheet" href="../css/stylecarrito.css">
+  <link rel="stylesheet" href="../css/styleHeader.css">
+  <link rel="stylesheet" href="../css/styleFooter.css">
 </head>
 
 <body>
@@ -34,7 +27,6 @@
       <div id="resumen-detalle">
         <p class="total">Total: $<span id="total-compra">0</span> COP</p>
         <button class="checkout-btn" id="finalizarCompraBtn">Finalizar compra</button>
-        <button class="recibo-btn" id="descargarReciboBtn">Descargar Recibo PDF</button>
         <button class="eliminar-btn" id="vaciarCarritoBtn">Vaciar carrito</button>
       </div>
     </section>
@@ -42,13 +34,9 @@
 
   <div id="footer-container"></div>
 
-  <!-- Configuraciones globales del frontend -->
-  <script src="../javascript/config.js" type="module"></script>
-
-  <!-- Lógica del carrito con PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="../javascript/carrito.js"></script>
 
-  <!-- Cargar header/footer/icono dinámicamente -->
   <script>
     fetch("header.html")
       .then(res => res.text())
