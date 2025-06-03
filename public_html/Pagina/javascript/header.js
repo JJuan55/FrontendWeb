@@ -1,6 +1,6 @@
 import { obtenerUsuario } from './auth.js';
 
-(function manejarSesion() {
+function manejarSesion() {
 
     const usuario = obtenerUsuario(); // en lugar del JSON.parse
     const loginBtn = document.getElementById("loginBtn");
@@ -57,4 +57,4 @@ import { obtenerUsuario } from './auth.js';
         if (loginBtn) loginBtn.style.display = "inline-block";
         if (profileContainer) profileContainer.style.display = "none";
     }
-})();
+};
