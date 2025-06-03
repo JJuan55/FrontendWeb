@@ -1,4 +1,71 @@
 import { verificarSesion, obtenerIdVendedor, fetchConToken } from './auth.js';
+const productosEnVenta = [
+  {
+    id: 1,
+    nombre: "Bolso reciclado",
+    tipo: "accesorios",
+    precio: 18000,
+    disponible: true,
+    descripcion: "Bolso hecho a mano con materiales reciclados.",
+    vendedor: "María López",
+    imagen: "https://i.pinimg.com/222x/82/c4/3f/82c43f3ad354a70f2241eb83a8d7b750.jpg"
+  },
+  {
+    id: 2,
+    nombre: "Maceta ecológica",
+    tipo: "macetas",
+    precio: 12000,
+    disponible: true,
+    descripcion: "Maceta ecológica ideal para tu jardín.",
+    vendedor: "Carlos Ruiz",
+    imagen: "https://i.pinimg.com/236x/24/3e/bd/243ebdb3a754407943a2d1db8b4575ab.jpg"
+  },
+  {
+    id: 3,
+    nombre: "Florero reciclado",
+    tipo: "decoración",
+    precio: 16000,
+    disponible: true,
+    descripcion: "Florero moderno hecho de materiales reutilizados.",
+    vendedor: "Juan Moreno",
+    imagen: "https://i.pinimg.com/236x/d4/06/a1/d406a1d91e479f615fa9d8dce013c2fc.jpg"
+  },
+  {
+    id: 4,
+    nombre: "Silla ecológica",
+    tipo: "muebles",
+    precio: 45000,
+    disponible: true,
+    descripcion: "Silla resistente hecha 100% de plástico reciclado.",
+    vendedor: "PlastikReusa",
+    imagen: "https://st2.depositphotos.com/3944627/8211/i/950/depositphotos_82110258-stock-photo-recycled-chair-made-from-plastic.jpg"
+  }
+];
+
+const productosVendidos = [
+  {
+    id: 5,
+    nombre: "Lámpara con botellas",
+    tipo: "decoración",
+    precio: 35000,
+    disponible: false,
+    descripcion: "Lámpara elaborada con botellas recicladas.",
+    vendedor: "Luz Verde",
+    comprador: "Ana Pérez",
+    imagen: "https://i.pinimg.com/474x/c8/c6/59/c8c65949d7d1bf33192937dbbdc3d258.jpg"
+  },
+  {
+    id: 6,
+    nombre: "Banca para exteriores",
+    tipo: "muebles",
+    precio: 120000,
+    disponible: false,
+    descripcion: "Banca durable hecha de botellas de plástico recicladas.",
+    vendedor: "EcoMuebles",
+    comprador: "José Martínez",
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrRxHPBL1qnilHptQ4ATuH7lYH5RPdGuzWsw&s"
+  }
+];
 
 document.addEventListener('DOMContentLoaded', () => {
   verificarSesion(['vendedor']); // ✅ Solo vendedores
