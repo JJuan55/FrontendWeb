@@ -49,10 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function finalizarCompra() {
-    if (carrito.length === 0) {
-      alert("Tu carrito está vacío.");
-      return;
-    }
+    //if (carrito.length === 0) {
+     // alert("Tu carrito está vacío.");
+      //return;
+    //}
 
     alert("Compra finalizada. ¡Gracias por tu compra!");
     carrito = [];
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Eventos
   document.getElementById("finalizarCompraBtn").addEventListener("click", finalizarCompra);
   document.getElementById("vaciarCarritoBtn").addEventListener("click", vaciarCarrito);
-  document.getElementById("descargarReciboBtn").addEventListener("click", generarFacturaPDF);
+  document.getElementById("finalizarCompraBtn").addEventListener("click", generarFacturaPDF);
 
   actualizarCarrito();
 });
