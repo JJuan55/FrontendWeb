@@ -93,3 +93,8 @@
       headers
     });
   }
+
+export function usuarioActivo() {
+  return obtenerSesion()?.usuario || null;
+}
+
