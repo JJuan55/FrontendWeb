@@ -152,11 +152,32 @@
               }
             })
             .catch((error) => {
-              mensajeVerificacion.textContent = "Error al verificar: " + error.message;
-            });
-        });
-      }
+        mensajeVerificacion.textContent = "Error al verificar: " + error.message;
+      });
     });
+  }
+
+  // Modal de Términos y Condiciones
+  const abrirModal = document.getElementById("abrirModalTerminos");
+  const modal = document.getElementById("modalTerminos");
+  const cerrarModal = document.getElementById("cerrarModalTerminos");
+
+  abrirModal?.addEventListener("click", (e) => {
+    e.preventDefault();
+    modal.style.display = "flex";
+  });
+
+  cerrarModal?.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+});
+
 
 
 
