@@ -1,3 +1,4 @@
+import { usuarioActivo, fetchConToken } from './auth.js';
 document.addEventListener("DOMContentLoaded", () => {
   const producto = JSON.parse(localStorage.getItem("productoSeleccionado"));
 
