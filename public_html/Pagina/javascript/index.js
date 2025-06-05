@@ -143,7 +143,6 @@ function renderizarProductos(lista) {
     });
 }
 
-
 function renderizarUltimosVistos() {
     const contenedorVistos = document.getElementById("ultimos-vistos");
     contenedorVistos.innerHTML = "";
@@ -153,6 +152,7 @@ function renderizarUltimosVistos() {
     vistos.slice(0, maxMostrar).forEach(producto => {
         const div = document.createElement("div");
         div.className = "product-card";
+        div.style.cursor = "pointer"; // para que se vea interactivo
 
         div.innerHTML = `
             <div class="img-container">
@@ -164,9 +164,16 @@ function renderizarUltimosVistos() {
             </div>
         `;
 
+        // Agregar evento click como en productos destacados
+        div.addEventListener("click", () => {
+            localStorage.setItem("productoSeleccionado", JSON.stringify(producto));
+            window.location.href = "producto.html";
+        });
+
         contenedorVistos.appendChild(div);
     });
 }
+
 
 
 // Verifica si hay sesión activa
