@@ -99,22 +99,21 @@ body {
 }
 
 .mensaje-sesion {
+  display: none;
   position: fixed;
-  top: 250px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #e41d1d;
+  background-color: #f44336;
   color: white;
-  padding: 15px 25px;
-  border-radius: 10px;
-  font-weight: bold;
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-size: 16px;
+  z-index: 999;
+  transition: opacity 0.3s ease;
 }
 
 .mensaje-sesion.mostrar {
-  opacity: 1;
-  pointer-events: auto;
+  display: block;
 }
+
