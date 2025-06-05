@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#producto-disponibilidad").textContent = producto.disponible ? "Disponible" : "No disponible";
 
   const btnAgregar = document.querySelector(".btn-carrito");
-  const usuario = usuarioActivo(); // 👈 Centralizado desde auth.js
+  const sesion = obtenerSesion(); 
+
 
   if (!producto.disponible) {
     btnAgregar.disabled = true;
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btnAgregar.addEventListener("click", () => {
-    if (!usuario) {
+    if (!sesion) {
       mostrarMensajeSesion();
       return;
     }
