@@ -1,7 +1,10 @@
 document.getElementById('contactForm').addEventListener('submit', function (event) {
-  event.preventDefault();
+  const alerta = document.getElementById('alerta');
+  alerta.style.display = 'block';
 
-  alert('¡Gracias por contactarnos! Pronto nos comunicaremos contigo.');
-  this.reset();
+  setTimeout(() => {
+    alerta.style.display = 'none';
+  }, 5000);
 });
+
 
