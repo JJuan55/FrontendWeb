@@ -7,25 +7,23 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Guardar en últimos vistos
   let vistos = JSON.parse(localStorage.getItem("ultimosVistos")) || [];
   vistos = vistos.filter(p => p.nombre !== producto.nombre);
   vistos.unshift(producto);
   if (vistos.length > 5) vistos = vistos.slice(0, 5);
   localStorage.setItem("ultimosVistos", JSON.stringify(vistos));
 
-  // Mostrar información del producto
   document.querySelector(".imagenes-producto img").src = producto.imagen;
   document.querySelector(".imagenes-producto img").alt = producto.nombre;
   document.querySelector(".detalles h2").textContent = producto.nombre;
   document.querySelector(".precio").textContent = `$${producto.precio.toLocaleString()} COP`;
   document.querySelector(".descripcion").textContent = producto.descripcion || "Este producto no tiene descripción.";
   document.querySelector(".vendedor").innerHTML = `<strong>Vendido por:</strong> ${producto.vendedor || "Vendedor anónimo"}`;
+  document.querySelector(".cantidad").textContent = `En este producto se han reciclado ${producto.cantidad} kilogramos de plástico`|| "Este producto no tiene kilogramos calculados.";
   document.querySelector("#producto-disponibilidad").textContent = producto.disponible ? "Disponible" : "No disponible";
 
   const btnAgregar = document.querySelector(".btn-carrito");
-  const sesion = obtenerSesion(); 
-
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
 
   if (!producto.disponible) {
     btnAgregar.disabled = true;
@@ -35,20 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btnAgregar.addEventListener("click", () => {
-    if (!sesion) {
+    if (!usuario) {
       mostrarMensajeSesion();
       return;
     }
 
-    const cantidad = parseInt(document.querySelector("#cantidad").value);
-    if (cantidad > 0) {
-      const dto = {
-        idUsuario: usuario.id,
-        idProducto: producto.id,
-        cantidad: cantidad
-      };
-
-      fetchConToken("/api/carrito/agregar", {
+      fetch("/api/carrito/agregar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -60,12 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
           return res.text();
         })
         .then(msg => {
-          alert(msg);
+          alert(msg);  // Muestra la respuesta del servidor
         })
         .catch(err => {
           alert("Hubo un error al agregar el producto al carrito: " + err.message);
         });
-    }
+    
   });
 
   function mostrarMensajeSesion() {
