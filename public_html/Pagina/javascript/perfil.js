@@ -1,5 +1,3 @@
-import { fetchConToken } from './auth.js';
-
 document.addEventListener("DOMContentLoaded", () => {
   const btnVendedor = document.getElementById("btn-vendedor");
   const modal = document.getElementById("formulario-vendedor");
@@ -36,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const response = await fetchConToken("/api/vendedor/registro", {
+      const response = await fetch("/api/vendedor/registro", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -61,5 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
