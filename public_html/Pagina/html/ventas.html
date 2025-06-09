@@ -48,6 +48,8 @@
                     <option value="utileria">Utileria</option>
                     <option value="otros">Otros</option>
                 </select>
+                <label>Kilogramos reciclados en el producto</label>
+                <input type="number" step="1" required>
                 <label>Imagen</label>
                 <input type="file" id="imagen" name="imagen" accept="image/*" required>
                 <button type="submit">Publicar producto</button>
@@ -102,7 +104,6 @@
     <script src="/Usuario/javascript/config.js"></script>
     <script type="module" src="/Usuario/javascript/auth.js"></script>
     <script src="../javascript/ventas.js"></script>
-  
     <script>
         fetch("header.html")
             .then(res => res.text())
