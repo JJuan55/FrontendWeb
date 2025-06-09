@@ -31,17 +31,17 @@ main {
     display: flex;
     overflow-x: auto;
     gap: 20px;
-    padding: 0 20px;
+    padding: 0 10px;
     scroll-snap-type: x mandatory;
     scroll-padding: 20px;
-    max-width: 100%; /* Asegura que no exceda el contenedor padre */
+    max-width: 100%; 
 }
 
 #ultimos-vistos {
     display: flex;
     gap: 20px;
     overflow-x: auto;
-    padding: 0 20px;
+    padding: 0 10px;
     scroll-snap-type: x mandatory;
 }
 
