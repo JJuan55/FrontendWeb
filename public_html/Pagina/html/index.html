@@ -13,7 +13,6 @@
 <body>
     <!-- Barra de navegación -->
     <div id="header-container"></div>
-
     <!-- Contenedor principal -->
     <main class="main-content">
         <!-- Carrusel -->
@@ -21,7 +20,7 @@
             <section class="productos">
                 <h2 class="section-title">Productos Destacados</h2>
                 <div class="carousel" id="product-carousel">
-                    <!-- Productos insertados -->
+                    <!-- Productos insertados  -->
                 </div>
             </section>
 
@@ -60,12 +59,8 @@
             </form>
         </aside>
     </main>
-
     <div id="footer-container"></div>
 
-    <!-- Scripts -->
-    <script src="../javascript/config.js"></script>
-    <script src="../javascript/auth.js"></script>
     <script src="../javascript/index.js"></script>
 
     <script>
@@ -80,7 +75,6 @@
             .then(data => {
                 document.getElementById("footer-container").innerHTML = data;
             });
-
         fetch("icono.html")
             .then(res => res.text())
             .then(data => {
