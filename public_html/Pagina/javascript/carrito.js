@@ -41,6 +41,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function mostrarAlerta(mensaje, tipo = "error", duracion = 4000) {
+    const alerta = document.getElementById("alerta-mensaje");
+
+    alerta.textContent = mensaje;
+    alerta.className = "alerta-mostrar";
+
+    if (tipo === "exito") {
+      alerta.classList.add("alerta-exito");
+    } else if (tipo === "info") {
+      alerta.classList.add("alerta-info");
+    } else {
+      alerta.classList.add("alerta-error");
+    }
+
+    alerta.style.opacity = "1";
+    alerta.style.display = "block";
+
+    setTimeout(() => {
+      alerta.style.opacity = "0";
+      setTimeout(() => {
+        alerta.className = "alerta-oculta";
+        alerta.style.display = "none";
+      }, 500);
+    }, duracion);
+  }
+
   function eliminarItem(e) {
     const index = e.target.getAttribute("data-index");
     carrito.splice(index, 1);
@@ -49,23 +75,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function finalizarCompra() {
-    //if (carrito.length === 0) {
-     // alert("Tu carrito está vacío.");
-      //return;
-    //}
-
-    alert("Compra finalizada. ¡Gracias por tu compra!");
+    if (carrito.length === 0) {
+      mostrarAlerta("Tu carrito está vacío.", "info");
+      return;
+    }
+    mostrarAlerta("Compra finalizada. ¡Gracias por tu compra!", "exito");
     carrito = [];
     localStorage.setItem("carrito", JSON.stringify(carrito));
     actualizarCarrito();
   }
 
   function vaciarCarrito() {
-    if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
+    const modal = document.getElementById("modal-confirmacion");
+    modal.style.display = "flex";
+
+    document.getElementById("confirmarVaciar").onclick = () => {
       carrito = [];
       localStorage.setItem("carrito", JSON.stringify(carrito));
       actualizarCarrito();
-    }
+      modal.style.display = "none";
+    };
+
+    document.getElementById("cancelarVaciar").onclick = () => {
+      modal.style.display = "none";
+    };
   }
 
   function generarFacturaPDF() {
@@ -125,7 +158,46 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.text("¡Gracias por tu compra!", 105, y, { align: "center" });
 
     doc.save("factura_compra.pdf");
+    const pdfBlob = doc.output("blob");
+    if (callback) callback(pdfBlob);
   }
+
+  function enviarFacturaPorCorreo(blob) {
+    const formData = new FormData();
+    formData.append("factura", blob, "factura_compra.pdf");
+    formData.append("carrito", JSON.stringify(carrito));
+    formData.append("correoComprador", localStorage.getItem("userEmail")); // o donde guardes el email
+
+    fetch("/api/facturas/enviar", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => {
+        if (res.ok) {
+          alert("Factura enviada por correo.");
+        } else {
+          alert("Hubo un error al enviar la factura.");
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("Error al contactar el servidor.");
+      });
+  }
+
+  document.getElementById("finalizarCompraBtn").addEventListener("click", () => {
+    if (carrito.length === 0) {
+      return;
+    }
+
+    generarFacturaPDF((pdfBlob) => {
+      enviarFacturaPorCorreo(pdfBlob);
+      carrito = [];
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      actualizarCarrito();
+    });
+  });
+
 
   // Eventos
   document.getElementById("finalizarCompraBtn").addEventListener("click", finalizarCompra);
