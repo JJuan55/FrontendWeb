@@ -24,14 +24,24 @@
     <section class="resumen-carrito">
       <h2>Resumen</h2>
       <div id="resumen-detalle">
-        <p class="total">Total: $<span id="total-compra">0</span> COP</p>
+        <p class="total">Total: $<span id="total-compra"></span> COP</p>
         <button class="checkout-btn" id="finalizarCompraBtn">Finalizar compra</button>
         <button class="eliminar-btn" id="vaciarCarritoBtn">Vaciar carrito</button>
       </div>
     </section>
   </main>
 
+  <div id="modal-confirmacion" style="display: none;" class="modal-fondo">
+  <div class="modal-contenido">
+    <p>¿Estás seguro de que deseas vaciar el carrito?</p>
+    <button id="confirmarVaciar" class="checkout-btn">Sí, vaciar</button>
+    <button id="cancelarVaciar" class="eliminar-btn">Cancelar</button>
+  </div>
+</div>
+
+
   <div id="footer-container"></div>
+  <div id="alerta-mensaje" class="alerta-oculta"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="../javascript/carrito.js"></script>
