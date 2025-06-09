@@ -22,6 +22,7 @@ body {
 
 /* Títulos */
 h1 {
+  margin-top: 2rem;
   font-size: 30px;
   text-align: center;
   color: #1b5e20;
@@ -39,7 +40,7 @@ h2 {
 
 /* Presentación */
 .presentacion p {
-  font-size: 1.2rem;
+  font-size: 16px;
   text-align: justify;
   background: linear-gradient(to right, #e8f5e9, #f1f8e9);
   padding: 1.5rem;
@@ -51,32 +52,29 @@ h2 {
 .mision-vision-valores {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 10px;
 }
 
-.mision,
-.vision,
+.misionvision,
 .valores {
+  margin-top: 2rem;
   background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 6px;
   border-left: 6px solid #2e7d32;
 }
 
-.mision h2,
-.vision h2,
+.misionvision h2,
 .valores h2 {
   font-size: 1.6rem;
 }
 
-.mision p,
-.vision p,
+.misionvision p,
 .valores ul {
-  font-size: 1rem;
+  font-size: 16px;
   text-align: justify;
 }
 
@@ -86,19 +84,6 @@ h2 {
   line-height: 1.6;
 }
 
-.grafica-compras {
-  background-color: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  margin-top: 2rem;
-  text-align: center;
-}
-
-.grafica-compras h2 {
-  margin-bottom: 1.5rem;
-}
-
 canvas {
   max-width: 100%;
   height: auto;
@@ -106,3 +91,31 @@ canvas {
   border: 1px solid #c8e6c9;
   border-radius: 10px;
 }
+
+.graficas {
+  margin: 2rem;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  border-left: 6px solid #2e7d32;
+}
+
+.contenedor-graficas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.grafica {
+  flex: 1 1 400px;
+  max-width: 500px;
+}
+
+.grafica h3 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #1b5e20;
+}
+
