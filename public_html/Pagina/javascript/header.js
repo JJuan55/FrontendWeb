@@ -1,14 +1,12 @@
-import { obtenerUsuario } from './auth.js';
-
 function manejarSesion() {
-
-    const usuario = obtenerUsuario(); // en lugar del JSON.parse
+    const usuario = JSON.parse(localStorage.getItem("usuario")); // Debe incluir rol_id
     const loginBtn = document.getElementById("loginBtn");
     const profileContainer = document.getElementById("profileContainer");
     const profileIcon = document.getElementById("profileIcon");
     const ventasLink = document.getElementById("ventasLink");
     const adminLink = document.getElementById("adminLink");
     const logoutBtn = document.getElementById("logoutBtn");
+    const userRoleText = document.getElementById("userRole");
 
     if (usuario) {
         if (loginBtn) loginBtn.style.display = "none";
@@ -17,6 +15,16 @@ function manejarSesion() {
         if (ventasLink) ventasLink.style.display = "none";
         if (adminLink) adminLink.style.display = "none";
 
+        if (userRoleText) {
+            switch (usuario.rol_id) {
+                case 1: userRoleText.textContent = "Rol: Vendedor"; break;
+                case 2: userRoleText.textContent = "Rol: Comprador"; break;
+                case 3: userRoleText.textContent = "Rol: Moderador"; break;
+                case 4: userRoleText.textContent = "Rol: Administrador"; break;
+                default: userRoleText.textContent = "Rol: Desconocido";
+            }
+        }
+        
         if (usuario.rol_id === 2 && ventasLink) {
             ventasLink.style.display = "block";
         }
@@ -58,3 +66,4 @@ function manejarSesion() {
         if (profileContainer) profileContainer.style.display = "none";
     }
 };
+
