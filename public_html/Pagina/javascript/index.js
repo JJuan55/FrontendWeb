@@ -5,6 +5,7 @@ const productos = [
     precio: 18000,
     disponible: true,
     descripcion: "Bolso hecho a mano con materiales reciclados.",
+    cantidad: 10,
     vendedor: "María López",
     imagen: "https://i.pinimg.com/222x/82/c4/3f/82c43f3ad354a70f2241eb83a8d7b750.jpg"
   },
@@ -14,6 +15,7 @@ const productos = [
     precio: 12000,
     disponible: true,
     descripcion: "Maceta ecológica ideal para tu jardín.",
+    cantidad: 5,
     vendedor: "Carlos Ruiz",
     imagen: "https://i.pinimg.com/236x/24/3e/bd/243ebdb3a754407943a2d1db8b4575ab.jpg"
   },
@@ -23,6 +25,7 @@ const productos = [
     precio: 35000,
     disponible: false,
     descripcion: "Lámpara elaborada con botellas recicladas.",
+    cantidad: 6,
     vendedor: "Luz Verde",
     imagen: "https://i.pinimg.com/474x/c8/c6/59/c8c65949d7d1bf33192937dbbdc3d258.jpg"
   },
@@ -32,6 +35,7 @@ const productos = [
     precio: 16000,
     disponible: true,
     descripcion: "Florero moderno hecho de materiales reutilizados.",
+    cantidad: 2,
     vendedor: "Juan Moreno",
     imagen: "https://i.pinimg.com/236x/d4/06/a1/d406a1d91e479f615fa9d8dce013c2fc.jpg"
   },
@@ -41,6 +45,7 @@ const productos = [
     precio: 45000,
     disponible: true,
     descripcion: "Silla resistente hecha 100% de plástico reciclado.",
+    cantidad: 6,
     vendedor: "PlastikReusa",
     imagen: "https://st2.depositphotos.com/3944627/8211/i/950/depositphotos_82110258-stock-photo-recycled-chair-made-from-plastic.jpg"
   },
@@ -50,6 +55,7 @@ const productos = [
     precio: 60000,
     disponible: true,
     descripcion: "Mesa compacta y moderna fabricada con plástico recuperado.",
+    cantidad: 16,
     vendedor: "Mundo Verde",
     imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGpDhf5d_baoa-n6bhI1uAWVvhzgsNGPMiRw&s"
   },
@@ -59,6 +65,7 @@ const productos = [
     precio: 120000,
     disponible: false,
     descripcion: "Banca durable hecha de botellas de plástico recicladas.",
+    cantidad: 36,
     vendedor: "EcoMuebles",
     imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrRxHPBL1qnilHptQ4ATuH7lYH5RPdGuzWsw&s"
   },
@@ -68,6 +75,7 @@ const productos = [
     precio: 3500,
     disponible: true,
     descripcion: "Llavero elaborado a mano con fragmentos de plástico PET.",
+    cantidad: 6,
     vendedor: "ArtePET",
     imagen: "https://i.pinimg.com/originals/67/5f/ca/675fcaf31b967205135cf23231a0a815.jpg"
   },
@@ -77,6 +85,7 @@ const productos = [
     precio: 30000,
     disponible: true,
     descripcion: "Cuadro de arte hecho con piezas plásticas recicladas.",
+    cantidad: 2,
     vendedor: "Arte Circular",
     imagen: "https://i.pinimg.com/474x/e2/43/b5/e243b5887a60d9c47f462ea0960ded64.jpg"
   },
@@ -86,6 +95,7 @@ const productos = [
     precio: 8000,
     disponible: true,
     descripcion: "Macetero colgante hecho con botellas PET reutilizadas.",
+    cantidad: 5,
     vendedor: "EcoHuerta",
     imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjCPE3dQLOHNZBMr2csjN4VppvZ_c8ITdvoQ&s"
   },
@@ -95,6 +105,7 @@ const productos = [
     precio: 9000,
     disponible: true,
     descripcion: "Estuche escolar elaborado con bolsas y plástico reciclado.",
+    cantidad: 2,
     vendedor: "VerdeEstilo",
     imagen: "https://i.ytimg.com/vi/OO9bmtW-G2g/maxresdefault.jpg"
   },
@@ -104,6 +115,7 @@ const productos = [
     precio: 2500,
     disponible: true,
     descripcion: "Set de portavasos hechos con tapas y botellas recicladas.",
+    cantidad: 7,
     vendedor: "EcoDiseños",
     imagen: "https://i.ytimg.com/vi/dOqnKNmNgL0/sddefault.jpg"
   }
@@ -143,6 +155,7 @@ function renderizarProductos(lista) {
     });
 }
 
+
 function renderizarUltimosVistos() {
     const contenedorVistos = document.getElementById("ultimos-vistos");
     contenedorVistos.innerHTML = "";
@@ -152,7 +165,7 @@ function renderizarUltimosVistos() {
     vistos.slice(0, maxMostrar).forEach(producto => {
         const div = document.createElement("div");
         div.className = "product-card";
-        div.style.cursor = "pointer"; // para que se vea interactivo
+        div.style.cursor = "pointer"; 
 
         div.innerHTML = `
             <div class="img-container">
@@ -163,8 +176,6 @@ function renderizarUltimosVistos() {
                 </div>
             </div>
         `;
-
-        // Agregar evento click como en productos destacados
         div.addEventListener("click", () => {
             localStorage.setItem("productoSeleccionado", JSON.stringify(producto));
             window.location.href = "producto.html";
@@ -173,8 +184,6 @@ function renderizarUltimosVistos() {
         contenedorVistos.appendChild(div);
     });
 }
-
-
 
 // Verifica si hay sesión activa
 function manejarSesion() {
@@ -222,4 +231,5 @@ document.addEventListener("DOMContentLoaded", () => {
     renderizarUltimosVistos();
     manejarSesion();
 });
+
 
