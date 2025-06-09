@@ -68,8 +68,6 @@ const productosVendidos = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  verificarSesion(['vendedor']); // ✅ Solo vendedores
-
   const btnSubir = document.getElementById('btnSubirProducto');
   const modal = document.getElementById('modalProducto');
   const cerrarModal = document.getElementById('cerrarModal');
@@ -81,10 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const cerrarModalEditar = document.getElementById('cerrarModalEditar');
   const formEditar = document.getElementById('formEditarProducto');
 
-  const idVendedor = obtenerIdVendedor();
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const idVendedor = usuario?.id;
+
   let productoEditando = null;
 
-  // ✅ Renderizar productos
   const renderProductos = (lista, contenedor, esVendido = false) => {
     contenedor.innerHTML = '';
     lista.forEach((p, index) => {
@@ -124,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnEliminar.addEventListener('click', async (e) => {
           e.stopPropagation();
           if (confirm(`¿Estás seguro de eliminar "${p.nombre}"?`)) {
-            const response = await fetchConToken(`${API_BASE_URL}/api/vendedor/productos/${p.id}?idVendedor=${idVendedor}`, {
+            const response = await fetch(`/api/vendedor/productos/${p.id}?idVendedor=${idVendedor}`, {
               method: 'DELETE'
             });
             const msg = await response.text();
@@ -176,8 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
       imagen: imagen.value
     };
 
-    const response = await fetchConToken(`${API_BASE_URL}/api/vendedor/productos/${productoEditando.id}?idVendedor=${idVendedor}`, {
+    const response = await fetch(`/api/vendedor/productos/${productoEditando.id}?idVendedor=${idVendedor}`, {
       method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(productoActualizado)
     });
 
@@ -192,11 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ Renderizar listas existentes
   renderProductos(productosEnVenta, contenedorVenta, false);
   renderProductos(productosVendidos, contenedorVendidos, true);
 
-  // ✅ Modal creación
   btnSubir.addEventListener('click', () => modal.style.display = 'block');
   cerrarModal.addEventListener('click', () => modal.style.display = 'none');
   cerrarModalEditar.addEventListener('click', () => modalEditar.style.display = 'none');
@@ -206,30 +204,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === modalEditar) modalEditar.style.display = 'none';
   });
 
-  // ✅ Crear nuevo producto
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     const nombre = form.querySelector('input[type="text"]').value;
     const precio = parseInt(form.querySelector('input[type="number"]').value);
     const tipo = form.querySelector('select').value;
-    const imagen = form.querySelector('input[type="file"]').value;
+    const imagen = form.querySelector('input[type="file"]').value; // Puedes ajustar si manejas files con FileReader
 
-    const nuevo = { nombre, precio, tipo, imagen };
+    const nuevo = {
+      id: Date.now(), // Reemplazar por ID real desde backend si es necesario
+      nombre, precio, tipo, imagen
+    };
 
-    const response = await fetchConToken(`${API_BASE_URL}/api/vendedor/productos`, {
-      method: "POST",
-      body: JSON.stringify(nuevo)
-    });
-
-    const msg = await response.text();
-    alert(msg);
-
-    if (response.ok) {
-      nuevo.id = Date.now(); // temporal
-      productosEnVenta.push(nuevo);
-      renderProductos(productosEnVenta, contenedorVenta);
-    }
-
+    productosEnVenta.push(nuevo);
+    renderProductos(productosEnVenta, contenedorVenta);
     form.reset();
     modal.style.display = 'none';
   });
@@ -258,3 +246,5 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
+
+
