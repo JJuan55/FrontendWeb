@@ -62,6 +62,9 @@ body {
     border-radius: 5px;
 }
 
+.formulario-contacto textarea {
+     height:200px;
+}
 .submit-btn {
     background-color: #2e7d32;
     color: white;
@@ -84,3 +87,5 @@ body {
 .info-contacto p {
     margin-bottom: 10px;
 }
+
+
